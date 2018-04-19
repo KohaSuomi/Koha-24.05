@@ -677,7 +677,7 @@ if ( $patron ) {
 
 my $fast_cataloging = 0;
 if ( Koha::BiblioFrameworks->find('FA') ) {
-    $fast_cataloging = 1 
+    $fast_cataloging = 1
 }
 
 my $view = $batch
@@ -764,5 +764,7 @@ $template->param(
     autoswitched              => $autoswitched,
     logged_in_user            => $logged_in_user,
 );
+
+C4::Log::logaction("MEMBERS", "VIEW", $borrowernumber, "Check out page") if (C4::Context->preference("BorrowersViewLog") && $borrowernumber);
 
 output_html_with_http_headers $query, $cookie, $template->output;
