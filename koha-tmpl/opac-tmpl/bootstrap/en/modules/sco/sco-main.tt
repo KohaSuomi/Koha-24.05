@@ -237,7 +237,7 @@
                     [% ELSIF ( returned == 1 ) %]
                         <span class="sco-alert-success return"></span>
                         <div class="alert alert-info">
-                            <p>Item checked in <i>([% barcode | html %])</i></p>
+                            <p>Item checked in: [% title | html %] <i>([% barcode | html %])</i>[% IF library %], [% library %][% END %]</p>
                         </div>
                     [% END %]
 
@@ -454,19 +454,32 @@
                         </div>
                     </div>
                         [% ELSE # IF validuser %]
-                            <div class="sco_entry" >
+                        <div class="row">
+                            <div id="sco_entry_checkout" class="sco_entry col" >
+                            <h4>Check out</h4>
                                 <form id="mainform" action="/cgi-bin/koha/sco/sco-main.pl" name="mainform" method="post">
                                     [% INCLUDE 'csrf-token.inc' %]
                                     <fieldset>
                                         [% IF ( Koha.Preference('SelfCheckoutByLogin') ) %]
-                                            <legend>Log in to your account</legend>
-                                            <label for="patronlogin">Login:</label>
-                                            <input type="text" id="patronlogin" class="focus noEnterSubmit" size="20" name="patronlogin" autocomplete="off"/>
-                                            <label for="patronpw">Password:</label>
-                                            <input type="password" id="patronpw" size="20" name="patronpw" autocomplete="off"/>
-                                            <fieldset class="action">
-                                                <button type="submit" class="btn btn-primary">Log in</button>
-                                            </fieldset>
+                                            <div class="form-row">
+                                                <div class="col-auto">
+                                                    <label for="patronlogin">Login:</label>
+                                                </div>
+                                                <div class="col-3">
+                                                    <input type="text" id="patronlogin" class="form-control focus noEnterSubmit" size="20" name="patronlogin" autocomplete="off"/>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <label for="patronpw">Password:</label>
+                                                </div>
+                                                <div class="col-3">
+                                                    <input type="password" id="patronpw" class="form-control" size="20" name="patronpw" autocomplete="off"/>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <fieldset class="action">
+                                                        <button type="submit" class="btn btn-primary">Log in</button>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
                                         [% ELSE %]
                                             <div class="form-row">
                                                 <div class="col-auto">
@@ -488,8 +501,45 @@
                                     </fieldset>
                                 </form>
                             </div> <!-- / .sco_entry -->
+                            <div id="sco_entry_checkin" class="sco_entry col" >
+                                <form id="barcodeform" action="/cgi-bin/koha/sco/sco-main.pl" name="barcodeform" method="post">
+                                    [% INCLUDE 'csrf-token.inc' %]
+                                    <fieldset class="rows">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h4>Check in</h4>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                <label for="sco_entry_barcode">Please enter barcode:</label>
+                                            </div>
+                                            <div class="col-3">
+                                                [% IF ( checkinmessage ) %]
+                                                    <input type="text" id="sco_entry_barcode"  class="form-control focus" name="sco_entry_barcode" autocomplete="off" />
+                                                [% ELSE %]
+                                                    <input type="text" id="sco_entry_barcode" class="form-control" name="sco_entry_barcode" autocomplete="off" />
+                                                [% END %]
+                                            </div>
+                                            <div class="col">
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </div>
+                                        [% FOREACH INPUT IN INPUTS %]
+                                        <input type="hidden" name="[% INPUT.name |html %]" value="[% INPUT.value |html %]">
+                                        [% END %]
+                                        <input type="hidden" name="op" value="cud-sco_entry_checkin" />
+                                    </fieldset>
+                                </form>
+                            </div> <!-- / .sco_entry -->
+                        </div> <!-- / .row -->
                         [% END # / IF validuser %]
                     [% END # / UNLESS ( hide_main %]
+                    [% IF ( checkinmessage ) %]
+                        <div>
+                            <b>Returned [% checkinmessage %]</b>
+                        </div>
+                    [% END %]
                     [% IF ( SCOMainUserBlock ) %]
                         <div id="scomainuserblock">
                             [% PROCESS koha_news_block news => SCOMainUserBlock %]
@@ -567,7 +617,7 @@
 
         $(document).ready(function() {
             dofocus();
-            [% IF ( patronid ) %]sco_init();[% END %]
+            [% IF ( patronid || barcode ) %]sco_init();[% END %]
 
             var dTables = $("#loanTable, #holdst, #finestable");
             dTables.each(function(){
