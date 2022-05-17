@@ -77,54 +77,55 @@
                         </ul>
                     </div>
 
-                    <div class="col-sm-5 col-md-4">
-                        <h3>Holds</h3>
 
-                        <ul class="buttons-list">
-                            <li>
-                                <a class="circ-button" href="/cgi-bin/koha/circ/view_holdsqueue.pl"><i class="fa fa-tasks"></i> Holds queue</a>
-                            </li>
-                            <li>
-                                <a class="circ-button" href="/cgi-bin/koha/circ/pendingreserves.pl"><i class="fa-solid fa-hand-back-fist"></i> Holds to pull</a>
-                            </li>
-                            <li>
-                                <a class="circ-button" href="/cgi-bin/koha/circ/waitingreserves.pl"><i class="fa-solid fa-calendar-days"></i> Holds awaiting pickup</a>
-                            </li>
-                            [% IF ( Koha.Preference('CurbsidePickup') && CAN_user_circulate_manage_curbside_pickups ) %]
-                            <li>
-                                <a class="circ-button" href="/cgi-bin/koha/circ/curbside_pickups.pl"><i class="fa-solid fa-rotate"></i> Curbside pickups</a>
-                            </li>
-                            [% END %]
-                            <li>
-                                <a class="circ-button" href="/cgi-bin/koha/circ/reserveratios.pl"><i class="fa-solid fa-chart-line"></i> Hold ratios</a>
-                            </li>
-                        </ul>
+            <div class="col-sm-5 col-md-4">
+                <h3>Holds</h3>
 
-                        [% IF Koha.Preference('UseRecalls') and CAN_user_recalls %]
-                            <h3>Recalls</h3>
+                <ul class="buttons-list">
+                    <li>
+                        <a class="circ-button" href="/cgi-bin/koha/circ/view_holdsqueue.pl"><i class="fa fa-tasks"></i> Holds queue</a>
+                    </li>
+                    <li>
+                        <a class="circ-button" href="/cgi-bin/koha/circ/kohasuomi-pendingreserves.pl"><i class="fa-solid fa-hand-back-fist"></i> Holds to pull</a>
+                    </li>
+                    <li>
+                        <a class="circ-button" href="/cgi-bin/koha/circ/waitingreserves.pl"><i class="fa-solid fa-calendar-days"></i> Holds awaiting pickup</a>
+                    </li>
+                    [% IF ( Koha.Preference('CurbsidePickup') && CAN_user_circulate_manage_curbside_pickups ) %]
+                    <li>
+                        <a class="circ-button" href="/cgi-bin/koha/circ/curbside_pickups.pl"><i class="fa-solid fa-rotate"></i> Curbside pickups</a>
+                    </li>
+                    [% END %]
+                    <li>
+                        <a class="circ-button" href="/cgi-bin/koha/circ/reserveratios.pl"><i class="fa-solid fa-chart-line"></i> Hold ratios</a>
+                    </li>
+                </ul>
 
-                            <ul class="buttons-list">
-                                <li><a class="circ-button" href="/cgi-bin/koha/recalls/recalls_queue.pl" title="All active recalls"><i class="fa fa-tasks"></i> Recalls queue</a></li>
-                                <li><a class="circ-button" href="/cgi-bin/koha/recalls/recalls_to_pull.pl" title="Recalls that could be filled but have not been set waiting"><i class="fa-solid fa-hand-back-fist"></i> Recalls to pull</a></li>
-                                <li><a class="circ-button" href="/cgi-bin/koha/recalls/recalls_overdue.pl" title="Recalled items that are overdue to be returned"><i class="fa-solid fa-clock"></i> Overdue recalls</a></li>
-                                <li><a class="circ-button" href="/cgi-bin/koha/recalls/recalls_waiting.pl" title="Recalled items awaiting pickup"><i class="fa-solid fa-calendar-days"></i> Recalls awaiting pickup</a></li>
-                                <li><a class="circ-button" href="/cgi-bin/koha/recalls/recalls_old_queue.pl" title="Inactive recalls"><i class="fa fa-tasks"></i> Old recalls</a></li>
-                            </ul>
-                        [% END %]
-                    </div>
+                [% IF Koha.Preference('UseRecalls') and CAN_user_recalls %]
+                    <h3>Recalls</h3>
 
-                    <!-- Add the extra clearfix for only the required viewport -->
-                    <div class="clearfix visible-sm-block"></div>
+                    <ul class="buttons-list">
+                        <li><a class="circ-button" href="/cgi-bin/koha/recalls/recalls_queue.pl" title="All active recalls"><i class="fa fa-tasks"></i> Recalls queue</a></li>
+                        <li><a class="circ-button" href="/cgi-bin/koha/recalls/recalls_to_pull.pl" title="Recalls that could be filled but have not been set waiting"><i class="fa-solid fa-hand-back-fist"></i> Recalls to pull</a></li>
+                        <li><a class="circ-button" href="/cgi-bin/koha/recalls/recalls_overdue.pl" title="Recalled items that are overdue to be returned"><i class="fa-solid fa-clock"></i> Overdue recalls</a></li>
+                        <li><a class="circ-button" href="/cgi-bin/koha/recalls/recalls_waiting.pl" title="Recalled items awaiting pickup"><i class="fa-solid fa-calendar-days"></i> Recalls awaiting pickup</a></li>
+                        <li><a class="circ-button" href="/cgi-bin/koha/recalls/recalls_old_queue.pl" title="Inactive recalls"><i class="fa fa-tasks"></i> Old recalls</a></li>
+                    </ul>
+                [% END %]
+            </div>
 
-                    <div class="col-sm-5 col-md-4">
-                        [% IF Koha.Preference('ArticleRequests') %]
-                            <h3>Patron request</h3>
-                            <ul class="buttons-list">
-                                <li>
-                                    <a class="circ-button" href="/cgi-bin/koha/circ/article-requests.pl" title="Article requests"><i class="fa-solid fa-newspaper"></i> Article requests</a>
-                                </li>
-                            </ul>
-                        [% END %]
+            <!-- Add the extra clearfix for only the required viewport -->
+            <div class="clearfix visible-sm-block"></div>
+
+            <div class="col-sm-5 col-md-4">
+                [% IF Koha.Preference('ArticleRequests') %]
+                    <h3>Patron request</h3>
+                    <ul class="buttons-list">
+                        <li>
+                            <a class="circ-button" href="/cgi-bin/koha/circ/article-requests.pl" title="Article requests"><i class="fa-solid fa-newspaper"></i> Article requests</a>
+                        </li>
+                    </ul>
+                [% END %]
 
                         <h3>Transfers</h3>
 
