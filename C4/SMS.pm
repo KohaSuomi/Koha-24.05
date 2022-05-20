@@ -78,7 +78,7 @@ sub send_sms {
     my $self = shift;
     my $params= shift;
 
-    foreach my $required_parameter ( qw( message destination ) ) {
+    foreach my $required_parameter ( qw( message destination message_id ) ) {
         # Should I warn in some way?
         return unless defined $params->{ $required_parameter };
     }
@@ -132,6 +132,7 @@ sub send_sms {
         $sent = $sender->send_sms(
             to   => $params->{destination},
             text => $params->{message},
+            _message_id => $params->{'message_id'},
         );
     };
 
