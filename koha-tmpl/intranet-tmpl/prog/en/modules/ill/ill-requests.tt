@@ -125,8 +125,8 @@
                     [% INCLUDE 'messages.inc' %]
         [% END %]
             <div id="interlibraryloans">
-        [% IF !backends_available || !has_branch %]
-            <div class="dialog message">ILL module configuration problem. Take a look at the <a href="/cgi-bin/koha/about.pl#sysinfo_panel">about page</a></div>
+        [% IF !backends_available || !has_branch || ill_deprecated_backend_freeform_is_installed %]
+            <div class="alert alert-info">ILL module configuration problem. Take a look at the <a href="/cgi-bin/koha/about.pl?tab=sysinfo">about page</a></div>
         [% ELSE %]
                 [% INCLUDE 'ill-toolbar.inc' %]
                 [% INCLUDE 'ill-batch-modal.inc' %]
