@@ -613,6 +613,14 @@ function initializeSortable(selector) {
     });
 }
 
+function checkItemtypeSubfield(itemtype_field, itemtypes){
+    var itemtype = itemtype_field.val();
+    if(jQuery.inArray(itemtype, itemtypes) !== -1){
+        return true;
+    }
+    return false;
+}
+
 $(document).ready(function() {
     $("input.input_marceditor, input.indicator").addClass('noEnterSubmit');
     $(document).ajaxSuccess(function() {
