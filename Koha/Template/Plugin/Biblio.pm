@@ -18,6 +18,7 @@ package Koha::Template::Plugin::Biblio;
 # along with Koha; if not, see <http://www.gnu.org/licenses>.
 
 use Modern::Perl;
+use DateTime;
 
 use Template::Plugin;
 use base qw( Template::Plugin );
@@ -35,6 +36,62 @@ sub HoldsCount {
     my $holds = Koha::Holds->search( { biblionumber => $biblionumber } );
 
     return $holds->count();
+}
+
+sub ActiveHoldsCount {
+    my ( $self, $biblionumber ) = @_;
+
+    my $holds = Koha::Holds->search( { biblionumber => $biblionumber } );
+    my $count = 0;
+    my $now = dt_from_string;
+    while ( my $hold = $holds->next ) {
+	$count++ if $hold->is_suspended == 0 and DateTime->compare($now, dt_from_string( $hold->reservedate )) > 0;
+    }
+    return $count;
+}
+
+sub SuspendedHoldsCount {
+    my ( $self, $biblionumber ) = @_;
+
+    my $holds = Koha::Holds->search( { biblionumber => $biblionumber } );
+    my $count = 0;
+    while ( my $hold = $holds->next ) {
+	$count++ if $hold->is_suspended == 1;
+    }
+    return $count;
+}
+
+sub UpcomingHoldsCount {
+    my ( $self, $biblionumber ) = @_;
+
+    my $holds = Koha::Holds->search( { biblionumber => $biblionumber } );
+    my $count = 0;
+    my $now = dt_from_string;
+    while ( my $hold = $holds->next ) {
+	$count++ if DateTime->compare(dt_from_string( $hold->reservedate ), $now) > 0 and $hold->is_suspended == 0;
+    }
+    return $count;
+}
+
+sub ArticleRequestsActiveCount {
+    my ( $self, $biblionumber ) = @_;
+
+    my $ar = Koha::ArticleRequests->search(
+        {
+            biblionumber => $biblionumber
+        }
+    )->filter_by_current;
+
+    return $ar->count();
+}
+
+sub CanArticleRequest {
+    my ( $self, $biblionumber, $borrowernumber ) = @_;
+
+    my $biblio = Koha::Biblios->find( $biblionumber );
+    my $borrower = Koha::Patrons->find( $borrowernumber );
+
+    return $biblio ? $biblio->can_article_request( $borrower ) : 0;
 }
 
 # Do not use RecallsCount, it is deprecated and will be removed in a future release.
