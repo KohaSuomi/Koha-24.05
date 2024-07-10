@@ -300,7 +300,7 @@
                 searchable: false,
                 orderable: false,
                 render: function (data, type, row, meta) {
-                    if ( can_edit_items_from[row.holding_library_id] ){
+                    if ( can_edit_items_from[row.home_library_id] ){
                         if ( items_selection[tab_id].includes(row.item_id) ) {
                             return '<input type="checkbox" value="%s" name="itemnumber" checked />'.format(row.item_id);
                         } else {
@@ -752,7 +752,7 @@
             {
                 data: function( row, type, val, meta ) {
                     let nodes = '';
-                    if ( can_edit_items_from[row.holding_library_id] ){
+                    if ( can_edit_items_from[row.home_library_id] ){
                         [% IF Koha.Preference('LocalCoverImages') OR Koha.Preference('OPACLocalCoverImages') %]
                             nodes += '<div class="btn-group">';
                             nodes += ' <a class="btn btn-default btn-xs" href="/cgi-bin/koha/cataloguing/additem.pl?op=edititem&biblionumber=%s&itemnumber=%s#edititem"><i class="fa-solid fa-pencil"></i> %s</a><a class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>'.format(row.biblio_id, row.item_id, _("Edit"));
