@@ -26,6 +26,7 @@ use base qw( Template::Plugin );
 use Koha::Holds;
 use Koha::Database;
 use Koha::Recalls;
+use Koha::DateUtils qw( dt_from_string );
 
 # Do not use HoldsCount, it is deprecated and will be removed in a future release.
 sub HoldsCount {
