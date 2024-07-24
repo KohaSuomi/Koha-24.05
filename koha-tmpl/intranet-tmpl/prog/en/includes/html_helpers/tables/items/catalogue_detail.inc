@@ -388,7 +388,7 @@
                     if ( row.sub_location ) {
                         nodes += '<span class="sub_location">';
                         let sub_location_str = av_subloc.get(row.sub_location.toString());
-                        nodes += '(%s)'.format(escape_str(sub_location_str));
+                        nodes += ' (%s)'.format(escape_str(sub_location_str));
                         nodes += '</span>';
                     }
                     nodes += '</span>';
