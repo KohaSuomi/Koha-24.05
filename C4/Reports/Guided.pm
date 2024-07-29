@@ -623,6 +623,11 @@ sub execute_query {
         ->info("Report finished: $report_id") if $report_id;
 
     return ( $sth, { queryerr => $sth->errstr } ) if ( $sth->err );
+
+    # Check if table.* contained forbidden column names
+    return ( $sth, { passworderr => "Illegal column in results" } )
+        if Koha::Report->new->check_columns( undef, $sth->{NAME_lc} );
+
     return ($sth);
 }
 
