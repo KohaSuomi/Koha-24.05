@@ -1428,6 +1428,7 @@
                     <p>Suspended: [% suspended_hold_count | html %]</p>
                     <div id="toolbar" class="btn-toolbar">
                         <div class="btn-group">
+                            <input type="hidden" name="op" value="cud-modifyall">
                             <input type="hidden" name="biblionumber" value="[% biblionumber | html %]"/>
                             <input type="submit" class="btn btn-primary" name="submit" value="Update hold(s)" />
                         </div>
