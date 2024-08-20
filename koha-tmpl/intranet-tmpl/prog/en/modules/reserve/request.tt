@@ -1422,6 +1422,7 @@
                         </div>
                     [% END %]
                     <form id="existing_holds" name="T[% time | html %]" action="modrequest.pl" method="post" style="display:block">
+                    [% INCLUDE 'csrf-token.inc' %]
                     <h2>Existing holds</h2>
                     <p>Active: [% active_hold_count | html %]</p>
                     <p>Upcoming: [% upcoming_hold_count | html %]</p>
