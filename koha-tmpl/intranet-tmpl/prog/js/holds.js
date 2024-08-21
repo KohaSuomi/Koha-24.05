@@ -800,44 +800,38 @@ async function load_holds_queue() {
             e.preventDefault();
             var hold_id = $(this).attr('data-hold-id');
             let reason = $("#modal-cancellation-reason").val();
+            const data = [];
+            let reload = true;
             if (!multiselect) {
+                data.push({hold_id: hold_id});
+            } else {
+                holdsQueueTable.rows(".selected").every(function (index, element) {
+                    data.push(this.data());
+                });
+                reload = false;
+            }
+            deleteHolds(data, reason, reload);
+        });
+        function deleteHolds (data, reason, reload) {
+            data.forEach((row) => {
                 $.ajax({
                     method: "DELETE",
-                    url: '/api/v1/holds/' + encodeURIComponent(hold_id),
+                    url: '/api/v1/holds/' + encodeURIComponent(row.hold_id),
                     data: JSON.stringify(reason),
-                    success: function( data ){ $('#cancelModal').modal("hide"); holdsQueueTable.ajax.reload(null, false); },
+                    success: function( data ){ 
+                        $('#cancelModal').modal("hide"); 
+                        if (reload) {
+                            holdsQueueTable.ajax.reload(null, false); 
+                        } else {
+                            window.location.reload();
+                        }
+                    },
                     error: function( jqXHR, textStatus, errorThrown) {
                         //alert('There was an error:'+textStatus+" "+errorThrown);
                     },
                 });
-            } else {
-                const data = []
-                holdsQueueTable.rows(".selected").every(function (index, element) {
-                    data.push(this.data());
-                });
-                const idsArray = [];
-                let biblio_id;
-                data.forEach((row) => {
-                    biblio_id = row.biblio_id;
-                    idsArray.push(row.hold_id);
-                });
-                let link = '/cgi-bin/koha/reserve/request.pl?biblionumber='+biblio_id+'&amp;action=cancelBulk&amp;ids='+idsArray;
-                let reason = $("#modal-cancellation-reason").val();
-                if ( reason ) {
-                    link += "&amp;cancellation-reason=" + reason
-                }
-
-                $.ajax({
-                    url         : link,
-                    processData : false,
-                    contentType : false,
-                    type: 'GET'
-                }).done(function(data){
-                    $('#cancelModal').modal("hide");
-                    holdsQueueTable.ajax.reload(null, false);
-                });
-            }
-        });
+            });
+        }
         $(".holddate, .expirationdate").flatpickr({
             dateFormat: flatpickr_dateformat_string,
             onChange: function (selectedDates, dateStr, instance){
