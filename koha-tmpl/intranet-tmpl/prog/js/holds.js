@@ -815,13 +815,16 @@ async function load_holds_queue() {
         async function deleteHolds (data, reason) {
             for (const row of data) {
                 await deleteHold(row, reason);
-                await new Promise(resolve => setTimeout(resolve, 1000));
                 $('#cancelModal').find('.modal-body').append('<p class="hold-cancelled">'+__("Hold")+' '+row.hold_id+' '+__("cancelled")+'</p>');
+                await new Promise(resolve => setTimeout(resolve, 1000));
             }
-            $('#cancelModal').modal('hide');
-            $('#cancelModal').find('.modal-footer #cancelModalConfirmBtnAPI').prev('img').remove();
-            $('#cancelModal').find('.modal-body').find('.hold-cancelled').remove();
             holdsQueueTable.ajax.reload(null, false);
+            setTimeout(() => {
+                $('#cancelModal').modal('hide');
+                $('#cancelModal').find('.modal-footer #cancelModalConfirmBtnAPI').prev('img').remove();
+                $('#cancelModal').find('.modal-body').find('.hold-cancelled').remove();
+            });
+            
         }
         async function deleteHold(row, reason) {
             try {
