@@ -808,24 +808,31 @@ async function load_holds_queue() {
                     data.push(this.data());
                 });
             }
-            $('#cancelModal').find('.modal-body').html('<img src="/intranet-tmpl/prog/img/spinner-small.gif" alt="" /><span class="waiting_msg"></span>');
+            $('#cancelModal').find('.modal-footer #cancelModalConfirmBtnAPI').before('<img src="/intranet-tmpl/prog/img/spinner-small.gif" alt="" style="padding-right: 10px;"/>');
             deleteHolds(data, reason);
+            
         });
         async function deleteHolds (data, reason) {
-            await Promise.all(data.map(async (row) => {
+            for (const row of data) {
+                await deleteHold(row, reason);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                $('#cancelModal').find('.modal-body').append('<p class="hold-cancelled">'+__("Hold")+' '+row.hold_id+' '+__("cancelled")+'</p>');
+            }
+            $('#cancelModal').modal('hide');
+            $('#cancelModal').find('.modal-footer #cancelModalConfirmBtnAPI').prev('img').remove();
+            $('#cancelModal').find('.modal-body').find('.hold-cancelled').remove();
+            holdsQueueTable.ajax.reload(null, false);
+        }
+        async function deleteHold(row, reason) {
             try {
                 await $.ajax({
-                method: "DELETE",
-                url: '/api/v1/holds/' + encodeURIComponent(row.hold_id),
-                data: JSON.stringify(reason),
+                    method: "DELETE",
+                    url: '/api/v1/holds/' + encodeURIComponent(row.hold_id),
+                    data: JSON.stringify(reason),
                 });
             } catch (error) {
-                console.error(error);
+                console.error("Error when deleting hold: " + row.hold_id);
             }
-            }));
-            $('#cancelModal').modal('hide');
-            $('.waiting_msg').remove();
-            holdsQueueTable.ajax.reload(null, false);
         }
         $(".holddate, .expirationdate").flatpickr({
             dateFormat: flatpickr_dateformat_string,
