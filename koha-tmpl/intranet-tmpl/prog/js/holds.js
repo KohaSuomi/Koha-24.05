@@ -801,36 +801,31 @@ async function load_holds_queue() {
             var hold_id = $(this).attr('data-hold-id');
             let reason = $("#modal-cancellation-reason").val();
             const data = [];
-            let reload = true;
             if (!multiselect) {
                 data.push({hold_id: hold_id});
             } else {
                 holdsQueueTable.rows(".selected").every(function (index, element) {
                     data.push(this.data());
                 });
-                reload = false;
             }
-            deleteHolds(data, reason, reload);
+            $('#cancelModal').find('.modal-body').html('<img src="/intranet-tmpl/prog/img/spinner-small.gif" alt="" /><span class="waiting_msg"></span>');
+            deleteHolds(data, reason);
         });
-        function deleteHolds (data, reason, reload) {
-            data.forEach((row) => {
-                $.ajax({
-                    method: "DELETE",
-                    url: '/api/v1/holds/' + encodeURIComponent(row.hold_id),
-                    data: JSON.stringify(reason),
-                    success: function( data ){ 
-                        $('#cancelModal').modal("hide"); 
-                        if (reload) {
-                            holdsQueueTable.ajax.reload(null, false); 
-                        } else {
-                            window.location.reload();
-                        }
-                    },
-                    error: function( jqXHR, textStatus, errorThrown) {
-                        //alert('There was an error:'+textStatus+" "+errorThrown);
-                    },
+        async function deleteHolds (data, reason) {
+            await Promise.all(data.map(async (row) => {
+            try {
+                await $.ajax({
+                method: "DELETE",
+                url: '/api/v1/holds/' + encodeURIComponent(row.hold_id),
+                data: JSON.stringify(reason),
                 });
-            });
+            } catch (error) {
+                console.error(error);
+            }
+            }));
+            $('#cancelModal').modal('hide');
+            $('.waiting_msg').remove();
+            holdsQueueTable.ajax.reload(null, false);
         }
         $(".holddate, .expirationdate").flatpickr({
             dateFormat: flatpickr_dateformat_string,
