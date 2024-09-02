@@ -29,6 +29,9 @@
           type: string
           enum:
             - issuer
+            - item
+            - library
+            - patron
             - renewals
         collectionFormat: csv
     produces:
@@ -141,6 +144,9 @@
           type: string
           enum:
             - issuer
+            - item
+            - library
+            - patron
             - renewals
         collectionFormat: csv
     produces:
