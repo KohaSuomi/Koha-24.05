@@ -34,6 +34,7 @@ use C4::Output qw( output_html_with_http_headers );
 use C4::Acquisition qw( GetOrder GetBasket ModOrder );
 
 use Koha::Acquisition::Booksellers;
+use Koha::Util::Navigation;
 
 my $input = CGI->new;
 my ($template, $loggedinuser, $cookie, $flags) = get_template_and_user( {
@@ -60,6 +61,8 @@ if($op and $op eq 'cud-save') {
         $order->{'order_internalnote'} = $ordernotes;
     }
     ModOrder($order);
+    $referrer = Koha::Util::Navigation::validate_referer( $referrer, { staff => 1, fallback => 'orders.pl' } );
+
     print $input->redirect($referrer);
     exit;
 } else {

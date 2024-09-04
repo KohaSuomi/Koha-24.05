@@ -37,6 +37,7 @@ use C4::Acquisition qw( GetOrder GetBasket ModOrder );
 
 use Koha::Acquisition::Booksellers;
 use Koha::DateUtils qw( dt_from_string );
+use Koha::Util::Navigation;
 
 my $input = CGI->new;
 my ($template, $loggedinuser, $cookie, $flags) = get_template_and_user( {
@@ -57,6 +58,8 @@ if($op and $op eq 'cud-save') {
     my $estimated_delivery_date = $input->param('estimated_delivery_date');
     $order->{'estimated_delivery_date'} = $estimated_delivery_date ? dt_from_string( $estimated_delivery_date ) : undef;
     ModOrder($order);
+    $referrer = Koha::Util::Navigation::validate_referer( $referrer, { staff => 1, fallback => 'orders.pl' } );
+
     print $input->redirect($referrer);
     exit;
 } else {
