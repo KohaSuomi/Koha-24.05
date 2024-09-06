@@ -613,6 +613,9 @@ async function load_holds_queue() {
                         success: function(res){
                             patron = HidePatronName ? res.cardnumber : res.firstname+' '+ res.surname+' ('+res.cardnumber+')';
                             $(currentCell).html('<a href="/cgi-bin/koha/members/moremember.pl?borrowernumber='+data.patron_id+'">'+patron+'</a>');
+                        },
+                        error: function(){
+                            $(currentCell).html(__("Patron not available"));
                         }
                     });
                     return '<img src="/intranet-tmpl/prog/img/spinner-small.gif" alt="" /><span class="waiting_msg"></span></div>';
