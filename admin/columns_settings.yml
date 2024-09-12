@@ -1687,45 +1687,6 @@ modules:
               columnname: notes
 
     holds:
-      holds-to-pull:
-        default_display_length: 20
-        default_sort_order: 0
-        columns:
-            -
-              columnname: pull_items
-            -
-              columnname: avalaible_items
-            -
-              columnname: patrons
-            -
-              columnname: patron
-            -
-              columnname: title
-            -
-              columnname: libraries
-            -
-              columnname: barcodes
-            -
-              columnname: call_numbers
-            -
-              columnname: copy_numbers
-            -
-              columnname: enumeration
-            -
-              columnname: itemtypes
-            -
-              columnname: locations
-            -
-              columnname: collection
-            -
-              columnname: hold_date
-            -
-              columnname: reserve_notes
-            -
-              columnname: pickup_location
-            -
-              columnname: action
-
       patron_holds_table:
         columns:
             -
@@ -1763,8 +1724,9 @@ modules:
             -
               columnname: print_slip
 
-    holds:
       kohasuomi-holds-to-pull:
+        default_display_length: 20
+        default_sort_order: 1
         columns:
             -
               columnname: pull
