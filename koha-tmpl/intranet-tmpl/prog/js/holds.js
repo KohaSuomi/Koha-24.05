@@ -723,11 +723,10 @@ async function load_holds_queue() {
             },
             {
                 "mDataProp": function( data, type, full, meta) {
-                    if ( data.status == 'T' ) {
-                        return '<input type="button" value="'+__("Revert transit status")+'" onclick="window.location.href=\'request.pl?action=move&amp;where=down&amp;first_priority=1&amp;last_priority='+totalHolds+'&amp;prev_priority=0&amp;next_priority=1&amp;borrowernumber='+data.patron_id+'&amp;biblionumber='+data.biblio_id+'&amp;itemnumber='+data.item_id+'&amp;reserve_id='+data.hold_id+'&amp;date='+data.hold_date+'\'">';
-                    } else if (data.status == 'W' || data.status == 'P') {
-                        return '<input type="button" value="'+__("Revert waiting status")+'" onclick="window.location.href=\'request.pl?action=move&amp;where=down&amp;first_priority=1&amp;last_priority='+totalHolds+'&amp;prev_priority=0&amp;next_priority=1&amp;borrowernumber='+data.patron_id+'&amp;biblionumber='+data.biblio_id+'&amp;itemnumber='+data.item_id+'&amp;reserve_id='+data.hold_id+'&amp;date='+data.hold_date+'\'">';
-                    } else {
+                    if(data.status){
+                        var link_value = data.status == 'T' ? __("Revert transit status") : __("Revert waiting status");
+                        return '<a class="btn btn-default submit-form-link" href="#" id="revert_hold_'+ data.hold_id +'" data-op="cud-move" data-where="down" data-first_priority="1" data-last_priority="'+ totalHolds +'" data-prev_priority="0" data-next_priority="1" data-borrowernumber="'+ data.patron_id +'" data-biblionumber="'+ data.biblio_id +'" data-itemnumber="'+ data.item_id +'" data-reserve_id="'+ data.hold_id +'" data-date="'+ data.hold_date +'" data-action="request.pl" data-method="post">'+ link_value +'</a>';
+                   } else {
                         var td = '';
                         if (SuspendHoldsIntranet) {
                             td += '<button class="btn btn-default btn-xs toggle-suspend" data-hold-id="'+data.hold_id+'" data-biblionumber="'+data.biblio_id+'" data-suspended="'+data.suspended+'">'
@@ -762,6 +761,7 @@ async function load_holds_queue() {
             },
         ]
     }));
+
     $('#holds-queue').on( 'draw.dt', function () {
         let multiselect = false;
         var MSG_CANCEL_SELECTED = $('.cancel_selected_holds').html().split("(")[0] + "(%s)";
