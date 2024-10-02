@@ -57,7 +57,7 @@
         <div class="btn-group">
         <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">More <span class="caret"></span></button>
             <ul class="dropdown-menu dropdown-menu-right">
-                [% IF CAN_user_borrowers_edit_borrowers %]
+                [% IF CAN_user_borrowers_edit_borrowers && CAN_user_staffaccess %]
                     <li><a id="renewpatron" href="/cgi-bin/koha/members/setstatus.pl?borrowernumber=[% patron.borrowernumber | html %]&amp;destination=[% destination | html %]&amp;reregistration=y">Renew patron</a></li>
                 [% ELSE %]
                     <li class="disabled"><a data-toggle="tooltip" data-placement="left" title="You are not authorized to renew patrons" id="renewpatron" href="#">Renew patron</a></li>
