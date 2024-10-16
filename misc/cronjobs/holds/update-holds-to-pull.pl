@@ -100,6 +100,7 @@ my $strsth =
             AND reserves.priority <> 0
             AND reserves.suspend = 0
             AND notforloan = 0 AND damaged = 0 AND itemlost = 0 AND withdrawn = 0
+            AND items.itype NOT IN (select itemtype from itemtypes where notforloan=1)
 
     GROUP BY reserves.biblionumber ORDER BY biblio.title
     ";
