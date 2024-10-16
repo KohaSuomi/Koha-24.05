@@ -1221,7 +1221,7 @@
                     [% SET inactive_hold_count = Biblio.InactiveHoldsCount( biblio.biblionumber ) | html %]
                     [% IF hold_count %]
                         <label for ="always_show_holds">Always show holds</label>
-                        [% IF always_show_holds == 'DONT' %]
+                        [% IF always_show_holds == 'DONT' || !always_show_holds %]
                             <input type="checkbox" name="always_show_holds" id="always_show_holds" value="DONT">
                             [% UNLESS reserveloop %]
                                 <a class="btn btn-default" value="Show holds" id="show_holds_now" href="/cgi-bin/koha/reserve/request.pl?biblionumber=[% biblio.biblionumber | uri %]&show_holds_now=1">Show holds ([% hold_count | html %])</a>
