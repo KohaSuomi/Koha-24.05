@@ -593,8 +593,9 @@ if (   ( $findborrower && $borrowernumber_hold || $findclub && $club_hold )
         my $always_show_holds = $input->cookie('always_show_holds');
         $template->param( always_show_holds => $always_show_holds );
         my $show_holds_now = $input->param('show_holds_now');
+        $template->param( show_holds_now => $show_holds_now);
         if ($multi_hold || C4::Context->preference('HoldsSplitQueue') ne 'nothing') {
-            unless( (defined $always_show_holds && $always_show_holds eq 'DONT') && !$show_holds_now ){
+            if( (defined $always_show_holds && $always_show_holds eq 'DO') || ($show_holds_now = "1") ){
                 my $holds_count_per_patron = {
                     map { $_->{borrowernumber} => $_->{hold_count} } @{ Koha::Holds->search(
                             { biblionumber => $biblionumber },
