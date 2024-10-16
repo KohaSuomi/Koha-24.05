@@ -706,13 +706,14 @@ async function load_holds_queue() {
             },
             {
                 "mDataProp": function( data, type, full, meta) {
-                    let link = 'request.pl?action=setLowestPriority&amp;borrowernumber='+data.patron_id+'&amp;biblionumber='+data.biblio_id+'&amp;reserve_id='+data.hold_id+'&amp;date='+data.hold_date+'';
-                    if (data.lowest_priority) {
-                        return '<a href="'+link+'" class="hold-arrow" title="Unset lowest priority"><i class="fa fa-lg fa-rotate-90 icon-unset-lowest" aria-hidden="true"></i></a>';
-                    } else if (data.item_id) {
-                        return null
+                    if ( data.item_id ) {
+                        return null;
                     } else {
-                        return '<a href="'+link+'" class="hold-arrow" title="Set lowest priority"><i class="fa fa-lg fa-rotate-90 icon-set-lowest" aria-hidden="true"></i></a>';
+                        if(data.lowest_priority){
+                            return '<a class="hold-arrow set-lowest-priority" title="Remove lowest priority" data-op="cud-setLowestPriority" data-borrowernumber="'+ data.patron_id +'" data-biblionumber="'+ data.biblio_id +'" data-reserve_id="'+ data.hold_id +'" data-date="'+ data.hold_date +'"><i class="fa fa-lg fa-rotate-90 icon-unset-lowest" aria-hidden="true"></i></a>';
+                        } else {
+                            return '<a class="hold-arrow set-lowest-priority" title="Set lowest priority" data-op="cud-setLowestPriority" data-borrowernumber="'+ data.patron_id +'" data-biblionumber="'+ data.biblio_id +'" data-reserve_id="'+ data.hold_id +'" data-date="'+ data.hold_date +'"><i class="fa fa-lg fa-rotate-90 icon-set-lowest" aria-hidden="true"></i></a>';
+                        }
                     }
                 }
             },
@@ -959,6 +960,18 @@ async function load_holds_queue() {
                     },
                 });
             }
+        });
+        $(".set-lowest-priority").one("click", function(e){
+            e.preventDefault();
+            var res_id = $(this).attr('data-reserve_id');
+            $.ajax({
+                method: "PUT",
+                url: '/api/v1/holds/' + encodeURIComponent(res_id) +'/set_lowest_priority',
+                success: function( data ){ holdsQueueTable.ajax.reload(null, false); },
+                error: function( jqXHR, textStatus, errorThrown) {
+                    alert('There was an error:'+textStatus+" "+errorThrown);
+                },
+            });
         });
         $(".hold_location_select").on("change", function(){
             $(this).prop("disabled",true);
