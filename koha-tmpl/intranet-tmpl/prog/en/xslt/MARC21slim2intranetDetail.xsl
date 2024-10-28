@@ -521,6 +521,34 @@
                 </xsl:for-each>
             </span>
         </xsl:if>
+        
+        <!-- 386 - Creator Characteristics -->
+        <xsl:if test="marc:datafield[@tag=386]">
+            <span class="results_summary creator_characteristics">
+                <span class="label">Creator/Contributor Characteristics: </span>
+                <xsl:for-each select="marc:datafield[@tag=386]">
+                    <xsl:if test="marc:subfield[@code='m']">
+                        <xsl:call-template name="chopPunctuation">
+                            <xsl:with-param name="chopString">
+                                <xsl:call-template name="subfieldSelect">
+                                    <xsl:with-param name="codes">m</xsl:with-param>
+                                </xsl:call-template>
+                            </xsl:with-param>
+                        </xsl:call-template>
+                        <xsl:text>: </xsl:text>
+                    </xsl:if>
+                        <xsl:call-template name="chopPunctuation">
+                            <xsl:with-param name="chopString">
+                                <xsl:call-template name="subfieldSelect">
+                                    <xsl:with-param name="codes">a</xsl:with-param>
+                                    <xsl:with-param name="delimeter">, </xsl:with-param>
+                                </xsl:call-template>
+                            </xsl:with-param>
+                        </xsl:call-template>
+                    <xsl:choose><xsl:when test="position()=last()"><xsl:text></xsl:text></xsl:when><xsl:otherwise><xsl:text> | </xsl:text></xsl:otherwise></xsl:choose>
+                </xsl:for-each>
+            </span>
+        </xsl:if>
 
         <xsl:call-template name="performance-medium"/> <!-- koha-suomi: show 382abn -->
 
