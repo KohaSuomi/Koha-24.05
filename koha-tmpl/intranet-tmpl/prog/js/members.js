@@ -82,14 +82,10 @@ function update_category_code(category_code) {
     var hint_string = __("Minimum password length: %s").format(min_length);
     hint.html(hint_string);
 
-    // Remove class ignore_validation from attribute field so it's validated
-    if($(mytables).find("li").is(":visible")){
-        $(mytables).find("li").children('[id*="patron_attr"]').removeClass("ignore_validation");
-    }
-    // Add class ignore_validation from attribute field to ignore validation
-    if($(mytables).find("li").is(":hidden")){
-        $(mytables).find("li").children('[id*="patron_attr"]').addClass("ignore_validation");
-    }
+    // Remove class ignore_validation from visible attribute field so it's validated
+    $(mytables).find("li").children('[id*="patron_attr"]:visible').each(function( index, val){
+        $(this).removeClass("ignore_validation");
+    });
 }
 
 function select_user(borrowernumber, borrower, relationship) {
