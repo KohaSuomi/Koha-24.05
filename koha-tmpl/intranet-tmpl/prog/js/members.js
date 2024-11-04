@@ -86,6 +86,11 @@ function update_category_code(category_code) {
     $(mytables).find("li").children('[id*="patron_attr"]:visible').each(function( index, val){
         $(this).removeClass("ignore_validation");
     });
+
+    // Add class ignore_validation from attribute field to ignore validation
+    $(mytables).find("li").children('[id*="patron_attr"]:hidden').each(function( index, val){
+        $(this).addClass("ignore_validation");
+    });
 }
 
 function select_user(borrowernumber, borrower, relationship) {
