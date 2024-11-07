@@ -191,6 +191,22 @@ function write_age() {
     hint.html(age_string);
 }
 
+function toggleRelationshipRequired() {
+    const relationshipField = $('.relationship');
+    const label = relationshipField.parent().find('label');
+    const requiredIndicator = relationshipField.parent().find('span.required');
+
+    if (!$('#contactname').val() && !$('#contactfirstname').val()) {
+        label.removeClass('required');
+        requiredIndicator.hide();
+        relationshipField.removeAttr('required');
+    } else {
+        label.addClass('required');
+        requiredIndicator.show();
+        relationshipField.attr('required', 'required');
+    }
+}
+
 $(document).ready(function(){
     if($("#yesdebarred").is(":checked")){
         $("#debarreduntil").show();
@@ -221,6 +237,16 @@ $(document).ready(function(){
         $(this).parents('fieldset').first().remove();
     });
 
+    if (mandatory_fields.includes('relationship')) {
+        toggleRelationshipRequired();
+        if ($('#contactname').length) {
+            $('#contactname').on('change', toggleRelationshipRequired);
+        }
+        if ($('#contactfirstname').length) {
+            $('#contactfirstname').on('change', toggleRelationshipRequired);
+        }
+    }
+    
     $(document.body).on('change','.select_city',function(){
         var selected_city = $(this).val();
         var addressfield = $(this).data("addressfield");
