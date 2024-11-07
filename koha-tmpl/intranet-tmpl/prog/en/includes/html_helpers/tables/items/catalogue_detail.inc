@@ -358,7 +358,7 @@
             },
             [% END %]
             {
-                data: "me.holding_library_id:holding_library.name",
+                data: "holding_library.name:me.holding_library_id",
                 className: "location",
                 searchable: true,
                 orderable: true,
@@ -367,7 +367,7 @@
                 }
             },
             {
-                data: "me.home_library_id:home_library.name",
+                data: "home_library.name:me.home_library_id",
                 className: "homebranch",
                 searchable: true,
                 orderable: true,
