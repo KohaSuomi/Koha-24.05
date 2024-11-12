@@ -726,7 +726,7 @@
             </div> <!-- /.col-sm-2.col-sm-pull-10 -->
         </div> <!-- /.row -->
 
-        [% IF Koha.Preference('ClaimReturnedLostValue') %]
+        [% IF Koha.Preference('ClaimReturnedLostValue') || Koha.Preference('BundleLostValue') %]
             [% INCLUDE 'modals/resolve_return_claim.inc' %]
         [% END %]
 
