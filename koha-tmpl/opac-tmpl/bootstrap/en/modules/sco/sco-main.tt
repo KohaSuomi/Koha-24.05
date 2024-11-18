@@ -515,7 +515,7 @@
                                                 <label for="sco_entry_barcode">Please enter barcode:</label>
                                             </div>
                                             <div class="col-3">
-                                                [% IF ( checkinmessage ) %]
+                                                [% IF ( returned == 1 ) %]
                                                     <input type="text" id="sco_entry_barcode"  class="form-control focus" name="sco_entry_barcode" autocomplete="off" />
                                                 [% ELSE %]
                                                     <input type="text" id="sco_entry_barcode" class="form-control" name="sco_entry_barcode" autocomplete="off" />
@@ -535,11 +535,6 @@
                         </div> <!-- / .row -->
                         [% END # / IF validuser %]
                     [% END # / UNLESS ( hide_main %]
-                    [% IF ( checkinmessage ) %]
-                        <div>
-                            <b>Returned [% checkinmessage %]</b>
-                        </div>
-                    [% END %]
                     [% IF ( SCOMainUserBlock ) %]
                         <div id="scomainuserblock">
                             [% PROCESS koha_news_block news => SCOMainUserBlock %]
@@ -617,7 +612,7 @@
 
         $(document).ready(function() {
             dofocus();
-            [% IF ( patronid || barcode ) %]sco_init();[% END %]
+            [% IF ( patronid || sco_entry_barcode ) %]sco_init();[% END %]
 
             var dTables = $("#loanTable, #holdst, #finestable");
             dTables.each(function(){
