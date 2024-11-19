@@ -239,6 +239,11 @@
                         <div class="alert alert-info">
                             <p>Item checked in: [% title | html %] <i>([% barcode | html %])</i>[% IF library %], [% library %][% END %]</p>
                         </div>
+                    [% ELSIF ( empty_return == 1 ) %]
+                        <span class="sco-alert-success return"></span>
+                        <div class="alert alert-info">
+                            <p>Please enter barcode.</p>
+                        </div>
                     [% END %]
 
                     [% UNLESS ( hide_main ) %]
@@ -515,7 +520,7 @@
                                                 <label for="sco_entry_barcode">Please enter barcode:</label>
                                             </div>
                                             <div class="col-3">
-                                                [% IF ( returned == 1 ) %]
+                                                [% IF ( returned == 1 || returned == 0 || empty_return ) %]
                                                     <input type="text" id="sco_entry_barcode"  class="form-control focus" name="sco_entry_barcode" autocomplete="off" />
                                                 [% ELSE %]
                                                     <input type="text" id="sco_entry_barcode" class="form-control" name="sco_entry_barcode" autocomplete="off" />

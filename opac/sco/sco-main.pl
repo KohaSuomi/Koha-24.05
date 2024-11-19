@@ -90,7 +90,7 @@ if ( defined C4::Context->preference('SCOAllowCheckin') ) {
 }
 
 my $issuerid = $loggedinuser;
-my ( $op, $patronlogin, $patronpw, $barcodestr, $confirmed, $newissues, $load_checkouts, $sco_entry_barcode, $returned_item ) = (
+my ( $op, $patronlogin, $patronpw, $barcodestr, $confirmed, $newissues, $load_checkouts, $sco_entry_barcode ) = (
     $query->param("op")                || '',
     $query->param("patronlogin")       || '',
     $query->param("patronpw")          || '',
@@ -99,7 +99,6 @@ my ( $op, $patronlogin, $patronpw, $barcodestr, $confirmed, $newissues, $load_ch
     $query->param("newissues")         || '',
     $query->param("load_checkouts")    || '',
     $query->param("sco_entry_barcode") || '',
-    $query->param("returned_item")     || undef,
 );
 
 my $jwt = $query->cookie('JWT');
@@ -155,6 +154,12 @@ if ( $patron ) {
 
 if ( ( $op eq "cud-sco_entry_checkin" ) || ( $patron && $op eq "cud-returnbook" && $allowselfcheckreturns ) ) {
     my $success = 1;
+
+    if( !@$barcodes ){
+        $template->param(
+            empty_return => 1
+        );
+    }
 
     foreach my $barcode (@$barcodes) {
         my $item = Koha::Items->find( { barcode => $barcode } );
