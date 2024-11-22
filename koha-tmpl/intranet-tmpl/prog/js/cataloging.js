@@ -615,10 +615,11 @@ function initializeSortable(selector) {
 
 function checkItemtypeSubfield(itemtype_field, itemtypes){
     var itemtype = itemtype_field.val();
-    if(jQuery.inArray(itemtype, itemtypes) !== -1){
+    if(itemtype in itemtypes){
         return true;
+    } else {
+        return false;
     }
-    return false;
 }
 
 $(document).ready(function() {

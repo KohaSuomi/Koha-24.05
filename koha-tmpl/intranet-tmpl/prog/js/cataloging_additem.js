@@ -177,8 +177,8 @@ function Check(f) {
     }
     if(itemtype_field.length && !valid_itemtypes){
         alertString2 = MSG_INVALID_ITEMTYPE;
-        jQuery.each(itemtypes, function(index, itemtype){
-            alertString2 += "\n- "+itemtype;
+        jQuery.each(itemtypes, function(itemtype, description){
+            alertString2 += "\n- "+description+": "+itemtype;
         });
     }
     if(alertString2){

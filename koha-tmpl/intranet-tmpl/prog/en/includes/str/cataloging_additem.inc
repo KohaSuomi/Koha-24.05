@@ -5,9 +5,9 @@
     var searchid = '[% searchid | html %]';
     var biblionumber = '[% biblionumber | html %]';
     var frameworkcode = '[% frameworkcode | html %]';
-    var itemtypes = [];
+    var itemtypes = {};
     [% FOREACH it IN ItemTypes.Get() %]
-      itemtypes.push('[% it.itemtype %]');
+      itemtypes['[% it.itemtype %]']='[% it.description %]';
     [% END %]
     [% IF popup %]
       var popup = true;
