@@ -617,7 +617,7 @@
 
         $(document).ready(function() {
             dofocus();
-            [% IF ( patronid || sco_entry_barcode ) %]sco_init();[% END %]
+            [% IF ( patronid || barcode ) %]sco_init();[% END %]
 
             var dTables = $("#loanTable, #holdst, #finestable");
             dTables.each(function(){
