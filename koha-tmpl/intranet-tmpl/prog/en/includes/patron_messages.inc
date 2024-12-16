@@ -23,7 +23,9 @@
             <li class="warndeparture">
                 <span class="circ-hlt">Expiration:</span>
                 <span>Patron's card expires on [% patron.dateexpiry | $KohaDates %].</span>
+                [% IF ( CAN_user_staffaccess && patron.category.category_type == 'S' ) || ( patron.category.category_type != 'S' ) %]
                 <a href="/cgi-bin/koha/members/setstatus.pl?borrowernumber=[% patron.borrowernumber | uri %]&amp;destination=circ&amp;reregistration=y">Renew</a> or <a href="/cgi-bin/koha/members/memberentry.pl?op=edit_form&amp;destination=circ&amp;borrowernumber=[% patron.borrowernumber | html %]">Edit details</a>
+                [% END %]
             </li>
         [% END %]
 
