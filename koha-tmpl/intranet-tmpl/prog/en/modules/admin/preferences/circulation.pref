@@ -1491,9 +1491,20 @@ Circulation:
             - 'or: </br>'
             - '<code>A<>B</code> - where <code><></code> means that rule applies to both libraries.</br></br>'
             - "Allowed operators are following:</br>"
-            - "<code>eq and ne</code> for strings,<code> <, >, == and !=</code> for numeric values and <code>=~</code> for regular expressions.</br>"
-            - "Use <code>&& and ||</code> operators to join statements together.</br>"
-            - "You can also use % as a wildcard when defining which libraries rule applies."
+            - <ul>
+            - <li><code>eq</code> - if the left string argument should match the right argument</li>
+            - <li><code>ne</code> - if the left string argument shouldn't match the right argument</li>
+            - <li><code>=~</code> - if the left string argument should match regular expression on the right</li>
+            - <li><code>==</code> - if the left numeric value argument should match the right argument</li>
+            - <li><code>!=</code> - if the left numeric value argument shouldn't match the right argument</li>
+            - <li><code><</code>  - if the left numeric value argument should be less than the right argument</li>
+            - <li><code>></code>  - if the left numeric value argument should be greater than the right argument</li>
+            - </ul>
+            - "Use <code>&& and ||</code> operators to join statements together:</br>"
+            - <ul>
+            - <li><code>&&</code> is an "AND" operator, use if both expressions should be true</li>
+            - <li><code>||</code> is an "OR" operator, use if either one of the expressions should be true</li>
+            - </ul>
             - Examples:</br>
             - <ul>
             - <li><code>itemtype eq "KIRJA"</code> - all items with item type "KIRJA" will float</li>
@@ -1503,5 +1514,7 @@ Circulation:
             - <li><code>itemtype =~ "(CD|DVD|KIRJA)"</code> - using a regular expression to match against the item attribute, floats item types "CD" or "DVD" or "KIRJA"</li>
             - <li><code>notforloan == 0</code> </li>
             - </ul>
+            - "You can also use % as a wildcard when defining which libraries rule applies:</br>"
+            - '<code>A%->B%: itemtype eq "KIRJA"</code></br></br>'
             - "You can also use comments to disable unused rules, just add <code>#</code> before the rule:</br>"
             - '<code>#A->B: itemtype eq "KIRJA"</code>'
