@@ -1209,7 +1209,7 @@ legend.collapsed i.fa.fa-caret-down::before {
                                                 <div class="hint">[% INCLUDE 'date-format.inc' %]</div>
                                             </li>
                                         [% ELSE %]
-                                            [% IF ( CAN_user_staffaccess && patron.category.category_type == 'S' ) || ( patron.category.category_type != 'S' ) %]
+                                            [% IF ( CAN_user_staffaccess ) %]
                                                 [% IF ( mandatorydateexpiry ) %]
                                                     <label for="to" class="required">
                                                 [% ELSE %]
@@ -1230,6 +1230,28 @@ legend.collapsed i.fa.fa-caret-down::before {
                                                     [% END %]
                                                     <div class="hint">[% INCLUDE 'date-format.inc' %]</div>
                                                 </li>
+                                            [% ELSE %]
+                                                [% IF ( mandatorydateexpiry ) %]
+                                                            <label for="to" class="required">
+                                                        [% ELSE %]
+                                                            <label for="to">
+                                                        [% END %]
+                                                        <p hidden>
+                                                                Expiry date:
+                                                            </label>
+                                                            [% UNLESS ( op == 'add_form' ) %]
+                                                                <input type="text" id="to" name="dateexpiry" maxlength="10"  size="10" value="[% borrower_data.dateexpiry | html UNLESS op == 'duplicate' %]" class="flatpickr"  />
+                                                            [% ELSE %]
+                                                                <input type="text" id="to" name="dateexpiry" maxlength="10"  size="10" value="[% borrower_data.dateexpiry | html %]" class="flatpickr" />
+                                                            [% END %]
+                                                            [% IF ( mandatorydateexpiry ) %]
+                                                                <span class="required">Required</span>
+                                                            [% END %]
+                                                            [% IF ( ERROR_dateexpiry ) %]
+                                                                <span class="required">(Error)</span>
+                                                            [% END %]
+                                                        </p>
+                                                    </li>
                                             [% END %]        
                                         [% END %]
                                                                          
