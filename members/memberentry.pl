@@ -512,6 +512,7 @@ if ((!$nok) and $nodouble and ($op eq 'cud-insert' or $op eq 'cud-save')){
 
         try {
             $patron->set( \%newdata )->store( { guarantors => \@guarantors } ) if scalar( keys %newdata ) > 1;
+            $patron->update_lastseen('modification');
                 # bug 4508 - avoid crash if we're not updating any columns in the borrowers table (editing patron attrs or msg prefs)
             $success = 1;
         } catch {
