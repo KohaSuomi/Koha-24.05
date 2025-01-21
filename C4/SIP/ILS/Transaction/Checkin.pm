@@ -261,7 +261,8 @@ sub _get_sort_bin {
         # Get the mapping and split on newlines
         my $raw_map = C4::Context->preference('SIP2SortBinMapping');
         return unless $raw_map;
-        @lines = split /\r\n/, $raw_map;
+        $raw_map=~s/\r//g;
+        @lines = split /\n/, $raw_map;
     }
 
     # Iterate over the mapping. The first hit wins.
