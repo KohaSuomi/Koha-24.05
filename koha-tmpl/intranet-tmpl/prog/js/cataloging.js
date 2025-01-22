@@ -575,12 +575,17 @@ function CloneItemSubfield(original){
  */
 function CheckMandatorySubfields(p){
     var total = 0;
+
     $(p).find(".subfield_line input[name='mandatory'][value='1']").each(function(){
         var editor = $(this).siblings(".input_marceditor");
         if ( !editor.length ) { // Deal with date inputs
             editor = $(this).siblings(".flatpickr_wrapper").find(".input_marceditor");
         }
         if (!editor.val()) {
+            // Check if editor is a Select2 element and highlight as missing 
+            if (editor.hasClass('select2') || editor.closest('.select2-container').length) {
+                editor.siblings('.select2').children('.selection').children('.select2-selection').css('background-color', '#FFFFCC');
+            }
             editor.addClass("missing");
             total++;
         }
