@@ -540,6 +540,7 @@ sub UpdateFine {
     my $borrowernumber = $params->{borrowernumber};
     my $amount         = $params->{amount};
     my $due            = $params->{due} // q{};
+    my $overdue_branch = $params->{branchcode};
 
     unless ( $issue_id ) {
         carp("No issue_id passed in!");
@@ -627,6 +628,7 @@ sub UpdateFine {
                     type        => 'OVERDUE',
                     item_id     => $itemnum,
                     issue_id    => $issue_id,
+                    library_id  => $overdue_branch,
                 }
             );
         }
