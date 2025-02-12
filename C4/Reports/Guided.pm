@@ -122,7 +122,7 @@ This will return a list of all the available report types
 =cut
 
 sub get_report_types {
-    my $dbh = C4::Context->dbh();
+    my $dbh = C4::KohaSuomi::Tweaks->dbh();
 
     # FIXME these should be in the database perhaps
     my @reports = ( 'Tabular', 'Summary', 'Matrix' );
@@ -144,7 +144,7 @@ This will return a list of all the available report areas with groups
 =cut
 
 sub get_report_groups {
-    my $dbh = C4::Context->dbh();
+    my $dbh = C4::KohaSuomi::Tweaks->dbh();
 
     my $groups = GetAuthorisedValues('REPORT_GROUP');
     my $subgroups = GetAuthorisedValues('REPORT_SUBGROUP');
@@ -173,7 +173,7 @@ This will return a list of all tables in the database
 =cut
 
 sub get_all_tables {
-    my $dbh   = C4::Context->dbh();
+    my $dbh = C4::KohaSuomi::Tweaks->dbh();
     my $query = "SHOW TABLES";
     my $sth   = $dbh->prepare($query);
     $sth->execute();
@@ -212,7 +212,7 @@ sub get_columns {
 
 sub _get_columns {
     my ($tablename,$cgi, $first) = @_;
-    my $dbh         = C4::Context->dbh();
+    my $dbh         = C4::KohaSuomi::Tweaks->dbh();
     my $sth         = $dbh->prepare("show columns from $tablename");
     $sth->execute();
     my @columns;
@@ -270,7 +270,7 @@ sub _build_query {
     my ( $tables, $columns, $criteria, $keys, $orderby, $totals, $definition) = @_;
 ### $orderby
     # $keys is an array of joining constraints
-    my $dbh           = C4::Context->dbh();
+    my $dbh           = C4::KohaSuomi::Tweaks->dbh();
     my $joinedtables  = join( ',', @$tables );
     my $joinedcolumns = join( ',', @$columns );
     my $query =
@@ -327,7 +327,7 @@ Returns an arraref to hashrefs suitable for using in a tmpl_loop. With the crite
 
 sub get_criteria {
     my ($area,$cgi) = @_;
-    my $dbh    = C4::Context->dbh();
+    my $dbh    = C4::KohaSuomi::Tweaks->dbh();
 
     # have to do someting here to know if its dropdown, free text, date etc
     my %criteria = (
@@ -432,7 +432,7 @@ sub nb_rows {
     }
 
 
-    my $dbh = C4::Context->dbh;
+    my $dbh = C4::KohaSuomi::Tweaks->dbh();
     my $sth;
     my $n = 0;
 
@@ -712,7 +712,7 @@ sub store_results {
 
 sub format_results {
     my ( $id ) = @_;
-    my $dbh = C4::Context->dbh();
+    my $dbh = C4::KohaSuomi::Tweaks->dbh();
     my ( $report_name, $notes, $json, $date_run ) = $dbh->selectrow_array(q|
        SELECT ss.report_name, ss.notes, sr.report, sr.date_run
        FROM saved_sql ss
@@ -760,7 +760,7 @@ sub get_saved_reports {
     $filter = { keyword => $filter } if $filter && !ref( $filter );
     my ($group, $subgroup) = @_;
 
-    my $dbh   = C4::Context->dbh();
+    my $dbh   = C4::KohaSuomi::Tweaks->dbh();
     my $query = get_saved_reports_base_query;
     my (@cond,@args);
     if ($filter) {
@@ -813,7 +813,7 @@ This takes a column name of the format table.column and will return what type it
 sub get_column_type {
 	my ($tablecolumn) = @_;
 	my ($table,$column) = split(/\./,$tablecolumn);
-	my $dbh = C4::Context->dbh();
+	my $dbh = C4::KohaSuomi::Tweaks->dbh();
 	my $catalog;
 	my $schema;
 
@@ -841,7 +841,7 @@ with the distinct values of the column
 sub get_distinct_values {
 	my ($tablecolumn) = @_;
 	my ($table,$column) = split(/\./,$tablecolumn);
-	my $dbh = C4::Context->dbh();
+	my $dbh = C4::KohaSuomi::Tweaks->dbh();
 	my $query =
 	  "SELECT distinct($column) as availablevalues FROM $table";
 	my $sth = $dbh->prepare($query);
@@ -861,7 +861,7 @@ sub save_dictionary {
 
 sub get_from_dictionary {
     my ( $area, $id ) = @_;
-    my $dbh   = C4::Context->dbh();
+    my $dbh   = C4::KohaSuomi::Tweaks->dbh();
     my $area_name_sql_snippet = get_area_name_sql_snippet;
     my $query = <<EOQ;
 SELECT d.*, $area_name_sql_snippet
@@ -905,7 +905,7 @@ Otherwise, it just returns.
 
 sub get_sql {
 	my ($id) = @_ or return;
-	my $dbh = C4::Context->dbh();
+	my $dbh = C4::KohaSuomi::Tweaks->dbh();
 	my $query = "SELECT * FROM saved_sql WHERE id = ?";
 	my $sth = $dbh->prepare($query);
 	$sth->execute($id);
@@ -915,7 +915,7 @@ sub get_sql {
 
 sub get_results {
     my ( $report_id ) = @_;
-    my $dbh = C4::Context->dbh;
+    my $dbh = C4::KohaSuomi::Tweaks->dbh();
     return $dbh->selectall_arrayref(q|
         SELECT id, report, date_run
         FROM saved_reports
@@ -1093,7 +1093,7 @@ sub EmailReport {
 sub _get_display_value {
     my ( $original_value, $column ) = @_;
     if ( $column eq 'periodicity' ) {
-        my $dbh = C4::Context->dbh();
+        my $dbh = C4::KohaSuomi::Tweaks->dbh();
         my $query = "SELECT description FROM subscription_frequencies WHERE id = ?";
         my $sth   = $dbh->prepare($query);
         $sth->execute($original_value);
