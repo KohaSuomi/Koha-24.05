@@ -748,6 +748,12 @@ Circulation:
                   branch_itemtype: "pickup library and item type"
             - "."
         -
+            - pref: HoldPickupShelves
+              choices:
+                  1: Enable
+                  0: Don's enable
+            - "the ability to define hold pickup shelves for libraries."
+        -
             - pref: EnableItemGroupHolds
               choices:
                   1: Enable
