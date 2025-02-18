@@ -13,7 +13,7 @@ return {
             ('HoldPickupShelves','0','0=No|1=Yes','Define hold pickup shelves', 'YesNo')
         });
 
-        say_success($out "Added new system preference 'HoldPickupShelves'");
+        say_success( $out, "Added new system preference 'HoldPickupShelves'");
 
         unless ( TableExists('hold_pickup_shelves') ) {
             $dbh->do(q{
@@ -21,21 +21,21 @@ return {
                     hold_pickup_shelf_id INT AUTO_INCREMENT PRIMARY KEY,
                     library_id VARCHAR(10) NOT NULL,
                     shelf_name VARCHAR(100) NOT NULL,
-                    items_limit INT NOT NULL,
-                    UNIQUE KEY (shelf_name)
+                    items_limit INT NOT NULL
+                    UNIQUE KEY (library_id, shelf_name)
                 )
             });
 
-            say_success($out "Added new table 'hold_pickup_shelves'");
+            say_success( $out, "Added new table 'hold_pickup_shelves'" );
         }
 
         $dbh->do(q{
             ALTER TABLE reserves
-            ADD COLUMN hold_pickup_shelf_id INT
-            FOREIGN KEY (hold_pickup_shelf_id) REFERENCES hold_pickup_shelves(hold_pickup_shelf_id)
+            ADD COLUMN hold_pickup_shelf_id INT,
+            ADD FOREIGN KEY (hold_pickup_shelf_id) REFERENCES hold_pickup_shelves(hold_pickup_shelf_id)
         });
 
-        say_success($out "Added column 'reserves.hold_pickup_shelf_id'");
+        say_success( $out, "Added column 'reserves.hold_pickup_shelf_id'" );
 
     },
 };
