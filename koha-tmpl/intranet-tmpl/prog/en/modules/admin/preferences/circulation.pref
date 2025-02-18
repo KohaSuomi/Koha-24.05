@@ -751,7 +751,7 @@ Circulation:
             - pref: HoldPickupShelves
               choices:
                   1: Enable
-                  0: Don's enable
+                  0: Don't enable
             - "the ability to define hold pickup shelves for libraries."
         -
             - pref: EnableItemGroupHolds
