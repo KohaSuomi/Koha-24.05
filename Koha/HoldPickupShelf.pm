@@ -22,9 +22,6 @@ use Modern::Perl;
 
 use base qw(Koha::Object);
 
-use Koha::Patrons;
-use Koha::Token;
-
 =head1 NAME
 
 Koha::HoldPickupShelf - Koha HoldPickupShelf Object class
