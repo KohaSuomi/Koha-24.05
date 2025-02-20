@@ -122,7 +122,7 @@ This will return a list of all the available report types
 =cut
 
 sub get_report_types {
-    my $dbh = C4::KohaSuomi::Tweaks->dbh();
+    my $dbh = C4::Context->dbh();
 
     # FIXME these should be in the database perhaps
     my @reports = ( 'Tabular', 'Summary', 'Matrix' );
@@ -144,7 +144,7 @@ This will return a list of all the available report areas with groups
 =cut
 
 sub get_report_groups {
-    my $dbh = C4::KohaSuomi::Tweaks->dbh();
+    my $dbh = C4::Context->dbh();
 
     my $groups = GetAuthorisedValues('REPORT_GROUP');
     my $subgroups = GetAuthorisedValues('REPORT_SUBGROUP');
@@ -173,7 +173,7 @@ This will return a list of all tables in the database
 =cut
 
 sub get_all_tables {
-    my $dbh = C4::KohaSuomi::Tweaks->dbh();
+    my $dbh = C4::Context->dbh();
     my $query = "SHOW TABLES";
     my $sth   = $dbh->prepare($query);
     $sth->execute();
@@ -712,7 +712,7 @@ sub store_results {
 
 sub format_results {
     my ( $id ) = @_;
-    my $dbh = C4::KohaSuomi::Tweaks->dbh();
+    my $dbh = C4::Context->dbh();
     my ( $report_name, $notes, $json, $date_run ) = $dbh->selectrow_array(q|
        SELECT ss.report_name, ss.notes, sr.report, sr.date_run
        FROM saved_sql ss
@@ -915,7 +915,7 @@ sub get_sql {
 
 sub get_results {
     my ( $report_id ) = @_;
-    my $dbh = C4::KohaSuomi::Tweaks->dbh();
+    my $dbh = C4::Context->dbh();
     return $dbh->selectall_arrayref(q|
         SELECT id, report, date_run
         FROM saved_reports
@@ -1093,7 +1093,7 @@ sub EmailReport {
 sub _get_display_value {
     my ( $original_value, $column ) = @_;
     if ( $column eq 'periodicity' ) {
-        my $dbh = C4::KohaSuomi::Tweaks->dbh();
+        my $dbh = C4::Context->dbh();
         my $query = "SELECT description FROM subscription_frequencies WHERE id = ?";
         my $sth   = $dbh->prepare($query);
         $sth->execute($original_value);
