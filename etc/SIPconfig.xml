@@ -83,6 +83,7 @@
              inhouse_patron_categories=""
              lost_status_for_missing="4"
              blocked_item_types="VM|MU"
+             no_block_prevreserve_status="revert"> <!-- could be "revert", revert waiting reserve to priority 1 or "cancel" cancel waiting reserve on this item -->
              seen_on_item_information="mark_found"> <!-- could be "keep_lost", empty to disable -->
              <!-- show_checkin_message: If enabled, successful checking responses will contain an AF screen message -->
              <!-- lost_block_checkout sets flag if patron has more than the given current checkouts that are lost ( itemlost > 0 by default ) -->
