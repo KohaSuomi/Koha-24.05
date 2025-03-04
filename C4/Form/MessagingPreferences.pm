@@ -170,8 +170,10 @@ sub restore_form_values {
             } ( 0 .. MAX_DAYS_IN_ADVANCE );
         }
 
-        my $transport_type = $input->param($message_attribute_id);
-        $option->{ 'transports_' . $transport_type } = 1 unless !$transport_type;
+        my @transport_types = $input->multi_param($message_attribute_id);
+        foreach my $transport_type (@transport_types){
+            $option->{ 'transports_' . $transport_type } = 1;
+        }
 
         if ( $option->{'has_digest'} ) {
             if ( List::Util::first { $_ == $message_attribute_id } $input->multi_param('digest') ) {
