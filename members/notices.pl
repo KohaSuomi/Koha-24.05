@@ -21,7 +21,7 @@
 
 use Modern::Perl;
 use C4::Auth qw( get_template_and_user );
-use C4::Output qw( output_and_exit_if_error output_and_exit output_html_with_http_headers );
+use C4::Output qw( output_and_exit_if_error output_and_exit output_html_with_http_headers pagination_bar );
 use CGI qw ( -utf8 );
 use C4::Members;
 use C4::Letters qw( GetPreparedLetter EnqueueLetter );
@@ -132,15 +132,76 @@ if ( $op eq 'send_password_reset' ) {
         "/cgi-bin/koha/members/notices.pl?borrowernumber=$borrowernumber");
 }
 
-# Getting the messages
-my $queued_messages = Koha::Notice::Messages->search({borrowernumber => $borrowernumber});
+sub GetMessageItems {
+    my $params = shift;
+    my $dbh    = C4::Context->dbh;
+    
+    my $search_params;
+    
+    $search_params->{'borrowernumber'} = $params->{borrowernumber}    if $params->{borrowernumber};
 
-$template->param(
-    patron             => $patron,
-    QUEUED_MESSAGES    => $queued_messages,
-    borrowernumber     => $borrowernumber,
-    sentnotices        => 1,
-);
+    my $rows = $params->{limit} || 20;
+    my $page = $params->{page}  || 1;
+    my $borrowernumber = $params->{borrowernumber};
+
+    my $results = Koha::Notice::Messages->search(
+        $search_params,
+        {   
+            borrowernumber => $borrowernumber,
+            rows => $rows,
+            page => $page
+        }
+    );
+    
+    my $total_results = Koha::Notice::Messages->search(
+        $search_params,
+        {
+            borrowernumber => $borrowernumber,    
+        }
+    )->count;
+
+    return ( $results, $total_results );
+}
+
+my $query = CGI->new;
+
+my $params = $query->Vars;
+
+my $limit          = $params->{'limit'} || 20;
+my $page           = $params->{'page'}  || 1;
+
+my $run_report     = $params->{'run_report'};
+$run_report = 1;
+# Getting the messages
+if ($run_report) {
+    my ( $items, $total ) = GetMessageItems(
+        {
+            borrowernumber => $borrowernumber,
+            limit          => $limit,
+            page           => $page,
+        }
+    );
+
+    my $pages = int( $total / $limit ) + ( ( $total % $limit ) > 0 ? 1 : 0 );
+    $template->param(
+        patron             => $patron,
+        QUEUED_MESSAGES    => $items,
+        borrowernumber     => $borrowernumber,
+        sentnotices        => 1,
+        page           => $page,
+        limit          => $limit,
+        total_entries => $total,
+        pagination_bar => pagination_bar(
+            'notices.pl',
+            $pages, $page, 'page',
+            {   
+                borrowernumber     => $borrowernumber,
+                limit          => $limit,
+                run_report     => 1,
+            }
+        ),
+    );
+}
 
 C4::Log::logaction("MEMBERS", "VIEW", $borrowernumber, "Notices page") if C4::Context->preference("BorrowersViewLog");
 

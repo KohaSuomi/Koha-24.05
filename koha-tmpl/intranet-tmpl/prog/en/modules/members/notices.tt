@@ -47,7 +47,27 @@
 
                     [% INCLUDE 'members-toolbar.inc' %]
                     <h1>Sent notices for [% INCLUDE 'patron-title.inc' %]</h1>
+                    
+                    <form action="notices.pl" method="get" id="limitselect">
+                        <input type="hidden" name="page" value="1"/>
+                        <input type="hidden" name="run_report" value="1"/>
+                        <input type="hidden" name="borrowernumber" value="[% borrowernumber | html %]"/>
 
+                        <label for="limit">Rows per page: </label>
+                        <select name="limit" id="limit">
+                            [% limits = [ 10, 20, 50, 100, 200, 300, 400, 500, 1000 ] %]
+                            [% FOREACH l IN limits %]
+                                [% IF l == limit %]
+                                    <option value="[% l | html %]" selected="selected">[% l | html %]</option>
+                                [% ELSE %]
+                                    <option value="[% l | html %]">[% l | html %]</option>
+                                [% END %]
+                            [% END %]
+                        </select>
+                    </form> <!-- /#limitselect -->
+        <div class="pages">[% pagination_bar | $raw %]</div>
+        <br>
+        <div id="total_entries">Showing [% page * limit - limit +1 %] to [% page * limit %] entries of [% total_entries %] entries</div>
                     [% IF ( QUEUED_MESSAGES ) %]
                         <div class="page-section">
                             <table id="noticestable">
@@ -168,6 +188,9 @@
         $(document).ready(function() {
             $("#noticestable").dataTable($.extend(true, {}, dataTablesDefaults, {
                 "order": [[ 3, "desc" ]],
+                "bLengthChange": false, //suppress datatable's own "show entries"
+                "bPaginate": false, // suppess datatable's own pagination (first/next/previous/last)
+                "bInfo": false, // suppress datatable's own info display (x of total y entries)
                 "pagingType": "full"
             }));
 
@@ -195,6 +218,11 @@
                 $("#resend-notice").removeData("noticeid").hide();
                 $("#noticeModalLabel").text("");
                 $("#noticeModal .modal-body").html("");
+            });
+            
+            //pagination rows per page changed
+            $('#limit').change(function() {
+                $('#limitselect').submit();
             });
         });
     </script>
