@@ -1,0 +1,21 @@
+---
+type: object
+properties:
+  hold_pickup_shelf_id:
+    type: integer
+    description: Internally assigned record source identifier
+    readOnly: true
+  shelf_name:
+    description: Shelf name
+    type: string
+  library_id:
+    description: Library identifier
+    type: integer
+  items_limit:
+    description: How many items can be placed on this shelf
+    type: integer
+additionalProperties: false
+required:
+  - shelf_name
+  - library_id
+  - items_limit

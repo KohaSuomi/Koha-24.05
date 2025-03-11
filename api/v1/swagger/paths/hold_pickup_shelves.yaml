@@ -1,0 +1,256 @@
+/holds/pickup_shelves:
+  get:
+    x-mojo-to: HoldPickupShelves#list
+    operationId: listHoldPickupShelves
+    summary: List hold pickup shelves
+    tags:
+      - hold_pickup_shelves
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/match"
+      - $ref: "../swagger.yaml#/parameters/order_by"
+      - $ref: "../swagger.yaml#/parameters/page"
+      - $ref: "../swagger.yaml#/parameters/per_page"
+      - $ref: "../swagger.yaml#/parameters/q_param"
+      - $ref: "../swagger.yaml#/parameters/q_body"
+      - $ref: "../swagger.yaml#/parameters/request_id_header"
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    responses:
+      "200":
+        description: A list of hold pickup shelves
+        schema:
+          type: array
+          items:
+            $ref: "../swagger.yaml#/definitions/hold_pickup_shelf"
+      "400":
+        description: |
+          Bad request. Possible `error_code` attribute values:
+
+            * `invalid_query`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Not allowed
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+    x-koha-authorization:
+      permissions:
+        reserveforothers: place_holds
+  post:
+    x-mojo-to: HoldPickupShelves#add
+    operationId: addHoldPickupShelves
+    summary: Add a hold pickup shelf
+    tags:
+      - hold_pickup_shelves
+    parameters:
+      - name: body
+        in: body
+        description: A JSON object containing informations about the new hold pickup shelf
+        required: true
+        schema:
+          $ref: "../swagger.yaml#/definitions/hold_pickup_shelf"
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    responses:
+      "201":
+        description: A hold pickup shelf
+        schema:
+          $ref: "../swagger.yaml#/definitions/hold_pickup_shelf"
+      "400":
+        description: Bad request
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Not allowed
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+    x-koha-authorization:
+      permissions:
+        reserveforothers: place_holds
+"/holds/pickup_shelves/{hold_pickup_shelf_id}":
+  get:
+    x-mojo-to: HoldPickupShelves#get
+    operationId: getHoldPickupShelves
+    summary: Get a hold pickup shelf
+    tags:
+      - hold_pickup_shelves
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/hold_pickup_shelf_id_pp"
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    responses:
+      "200":
+        description: A hold pickup shelf
+        schema:
+          $ref: "../swagger.yaml#/definitions/hold_pickup_shelf"
+      "400":
+        description: Bad request
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Not allowed
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "404":
+        description: Not found
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+    x-koha-authorization:
+      permissions:
+        reserveforothers: place_holds
+  put:
+    x-mojo-to: HoldPickupShelves#update
+    operationId: updateHoldPickupShelves
+    summary: Update a hold pickup shelf
+    tags:
+      - hold_pickup_shelves
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/hold_pickup_shelf_id_pp"
+      - name: body
+        in: body
+        description: A JSON object containing informations about the new hold pickup shelf
+        required: true
+        schema:
+          $ref: "../swagger.yaml#/definitions/hold_pickup_shelf"
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    responses:
+      "200":
+        description: A hold pickup shelf
+        schema:
+          $ref: "../swagger.yaml#/definitions/hold_pickup_shelf"
+      "400":
+        description: Bad request
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Not allowed
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "404":
+        description: Not found
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+    x-koha-authorization:
+      permissions:
+        reserveforothers: place_holds
+  delete:
+    x-mojo-to: HoldPickupShelves#delete
+    operationId: deleteHoldPickupShelves
+    summary: Delete a hold pickup shelf
+    tags:
+      - hold_pickup_shelves
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/hold_pickup_shelf_id_pp"
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    responses:
+      "204":
+        description: Deleted
+      "400":
+        description: Bad request
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Not allowed
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "404":
+        description: Not found
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "409":
+        description: |
+          Conflict in deleting resource. Possible `error_code` attribute values:
+
+          * `cannot_delete_used`: hold pickup shelf linked to a record cannot be deleted.
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+    x-koha-authorization:
+      permissions:
+        reserveforothers: place_holds
