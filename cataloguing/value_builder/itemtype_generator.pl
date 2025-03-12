@@ -23,15 +23,19 @@ use CGI;
 use JSON;
 
 use C4::Context;
+use Koha::Items;
 
 my $input = new CGI;
 my $itemtype = $input->param("itemtype");
-my $loc = $input->param("loc");
+my $itemnumber = $input->param("itemnumber");
+my $permanent_loc = Koha::Items->find({itemnumber => $itemnumber})->permanent_location if $itemnumber;
+my $loc = $input->param("loc") if !$permanent_loc;
 my $sub_loc = $input->param("subloc");
 my $ccode = $input->param("ccode");
 
 my $dbh = C4::Context->dbh;
 my @params = ($itemtype);
+push( @params, $permanent_loc) if ($permanent_loc);
 push( @params, $loc ) if ($loc);
 push( @params, $sub_loc ) if ($sub_loc);
 push( @params, $ccode ) if ($ccode);
@@ -39,6 +43,7 @@ push( @params, $ccode ) if ($ccode);
 my $query = "SELECT i.itype, count(*) AS count FROM items i
     LEFT JOIN biblioitems bi on(i.biblionumber = bi.biblionumber)
     WHERE bi.itemtype = ?";
+$query .= "AND i.permanent_location = ?" if $permanent_loc;
 $query .= "AND i.location = ?" if $loc;
 $query .= "AND i.sub_location = ?" if $sub_loc;
 $query .= "AND i.ccode = ?" if $ccode;
