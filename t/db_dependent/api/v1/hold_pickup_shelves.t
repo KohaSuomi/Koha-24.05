@@ -75,7 +75,7 @@ subtest 'list() tests' => sub {
 
     my $response_count = scalar @{ $t->tx->res->json };
 
-    is( $response_count, 10, 'The API returns 10 sources' );
+    is( $response_count, 10, 'The API returns 10 shelves' );
 
     my $id = $hold_pickup_shelf->hold_pickup_shelf_id;
     $t->get_ok("//$userid:$password@/api/v1/holds/pickup_shelves?q={\"hold_pickup_shelf_id\": $id}")->status_is(200)
@@ -129,14 +129,14 @@ subtest 'get() tests' => sub {
     $hold_pickup_shelf->delete;
 
     $t->get_ok("//$userid:$password@/api/v1/holds/pickup_shelves/$id")->status_is(404)
-        ->json_is( '/error' => 'Record source not found' );
+        ->json_is( '/error' => 'Hold pickup shelf not found' );
 
     $schema->storage->txn_rollback;
 };
 
 subtest 'delete() tests' => sub {
 
-    plan tests => 12;
+    plan tests => 10;
 
     $schema->storage->txn_begin;
 
@@ -170,32 +170,24 @@ subtest 'delete() tests' => sub {
 
     $hold_pickup_shelf->delete();
     $t->delete_ok("//$userid:$password@/api/v1/holds/pickup_shelves/$id")->status_is( 404, 'REST4.3' )
-        ->json_is( { error => q{Record source not found}, error_code => q{not_found} } );
+        ->json_is( { error => q{Hold pickup shelf not found}, error_code => q{not_found} } );
 
     $hold_pickup_shelf = $builder->build_object( { class => 'Koha::HoldPickupShelves' } );
     $id     = $hold_pickup_shelf->id;
-
-    my $biblio   = $builder->build_sample_biblio();
-    my $metadata = $biblio->metadata;
-    $metadata->hold_pickup_shelf_id( $hold_pickup_shelf->id )->store();
-
-    $t->delete_ok("//$userid:$password@/api/v1/holds/pickup_shelves/$id")->status_is( 409, 'REST3.2.4.1' );
-
-    $biblio->delete();
 
     $t->delete_ok("//$userid:$password@/api/v1/holds/pickup_shelves/$id")->status_is( 204, 'REST3.2.4' )
         ->content_is( q{}, 'REST3.3.4' );
 
     my $deleted_source = Koha::HoldPickupShelves->search( { hold_pickup_shelf_id => $id } );
 
-    is( $deleted_source->count, 0, 'No record source found' );
+    is( $deleted_source->count, 0, 'No hold pickup shelf' );
 
     $schema->storage->txn_rollback;
 };
 
 subtest 'add() tests' => sub {
 
-    plan tests => 8;
+    plan tests => 6;
 
     $schema->storage->txn_begin;
 
@@ -215,38 +207,51 @@ subtest 'add() tests' => sub {
 
     my $password = 'thePassword123';
 
+    my $library = $builder->build_object(
+        {
+            class => 'Koha::Libraries',
+            value => { branchcode => 'LIB' }
+        }
+    );
+
+    my $params = {
+        library_id => $library->id,
+        shelf_name => 'test1',
+        items_limit => 10,
+    };
+
     $nonprivilegedpatron->set_password( { password => $password, skip_validation => 1 } );
     my $userid    = $nonprivilegedpatron->userid;
     my $patron_id = $nonprivilegedpatron->borrowernumber;
 
-    $t->post_ok( "//$userid:$password@/api/v1/holds/pickup_shelves" => json => { name => 'test1' } )->status_is(403)
+    $t->post_ok( "//$userid:$password@/api/v1/holds/pickup_shelves" => json => $params )->status_is(403)
         ->json_is( '/error' => 'Authorization failure. Missing required permission(s).' );
 
     $patron->set_password( { password => $password, skip_validation => 1 } );
     $userid = $patron->userid;
 
     my $hold_pickup_shelf_id =
-        $t->post_ok( "//$userid:$password@/api/v1/holds/pickup_shelves" => json => { name => 'test1' } )
-        ->status_is( 201, 'REST3.2.2' )->json_is( '/name', 'test1' )->json_is( '/can_be_edited', 0 )
+        $t->post_ok( "//$userid:$password@/api/v1/holds/pickup_shelves" => json => $params )
+        ->status_is( 201, 'REST3.2.2' )
         ->tx->res->json->{hold_pickup_shelf_id};
 
     my $created_source = Koha::HoldPickupShelves->find($hold_pickup_shelf_id);
 
-    is( $created_source->name, 'test1', 'Record source found' );
+    is( $created_source->shelf_name, 'test1', 'Shelf name is correct' );
 
     $schema->storage->txn_rollback;
 };
 
 subtest 'update() tests' => sub {
 
-    plan tests => 15;
+    plan tests => 14;
 
     $schema->storage->txn_begin;
 
     my $librarian = $builder->build_object(
         {
             class => 'Koha::Patrons',
-            value => { flags => 2**3 }    # parameters flag = 2
+            value => { flags => 3 }
         }
     );
     my $password = 'thePassword123';
@@ -263,34 +268,56 @@ subtest 'update() tests' => sub {
     $patron->set_password( { password => $password, skip_validation => 1 } );
     my $unauth_userid = $patron->userid;
 
-    my $hold_pickup_shelf    = Koha::RecordSource->new( { name => 'old_name' } )->store;
+    my $library = $builder->build_object(
+        {
+            class => 'Koha::Libraries',
+            value => { branchcode => 'LIB' }
+        }
+    );
+
+    my $params = {
+        library_id => $library->id,
+        shelf_name => 'test1',
+        items_limit => 10,
+    };
+
+    my $hold_pickup_shelf    = Koha::HoldPickupShelf->new( $params )->store;
     my $hold_pickup_shelf_id = $hold_pickup_shelf->id;
 
+    $params->{shelf_name} = 'test2';
+
     # Unauthorized attempt to update
-    $t->put_ok( "//$unauth_userid:$password@/api/v1/holds/pickup_shelves/$hold_pickup_shelf_id" => json =>
-            { name => 'New unauthorized name change' } )->status_is(403);
+    $t->put_ok( "//$unauth_userid:$password@/api/v1/holds/pickup_shelves/$hold_pickup_shelf_id" => json => $params )->status_is(403);
 
     # Attempt partial update on a PUT
-    my $hold_pickup_shelf_with_missing_field = {};
+    $params = {
+        library_id => $library->id,
+        shelf_name => 'test3',
+    };
 
-    $t->put_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$hold_pickup_shelf_id" => json => $hold_pickup_shelf_with_missing_field )
-        ->status_is(400)->json_is( "/errors" => [ { message => "Missing property.", path => "/body/name" } ] );
+    $t->put_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$hold_pickup_shelf_id" => json => $params )
+        ->status_is(400)->json_is( "/errors" => [ { message => "Missing property.", path => "/body/items_limit" } ] );
 
     # Full object update on PUT
-    my $hold_pickup_shelf_with_updated_field = {
-        name => "new_name",
+    
+    $params = {
+        library_id => $library->id,
+        shelf_name => 'test3',
+        items_limit => 15,
     };
 
-    $t->put_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$hold_pickup_shelf_id" => json => $hold_pickup_shelf_with_updated_field )
-        ->status_is(200)->json_is( '/name' => $hold_pickup_shelf_with_updated_field->{name} );
+    $t->put_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$hold_pickup_shelf_id" => json => $params )
+        ->status_is(200);
 
     # Authorized attempt to write invalid data
-    my $hold_pickup_shelf_with_invalid_field = {
-        name   => "blah",
-        potato => "yeah",
+    $params = {
+        library_id => $library->id,
+        shelf_name => 'test3',
+        items_limit => 15,
+        potato => 'potato',
     };
 
-    $t->put_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$hold_pickup_shelf_id" => json => $hold_pickup_shelf_with_invalid_field )
+    $t->put_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$hold_pickup_shelf_id" => json => $params )
         ->status_is(400)->json_is(
         "/errors" => [
             {
@@ -304,13 +331,19 @@ subtest 'update() tests' => sub {
     my $non_existent_id  = $hold_pickup_shelf_to_delete->id;
     $hold_pickup_shelf_to_delete->delete;
 
-    $t->put_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$non_existent_id" => json => $hold_pickup_shelf_with_updated_field )
+    $params = {
+        library_id => $library->id,
+        shelf_name => 'test3',
+        items_limit => 15,
+    };
+
+    $t->put_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$non_existent_id" => json => $params )
         ->status_is(404);
 
     # Wrong method (POST)
-    $hold_pickup_shelf_with_updated_field->{hold_pickup_shelf_id} = 2;
+    $params->{hold_pickup_shelf_id} = 2;
 
-    $t->post_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$hold_pickup_shelf_id" => json => $hold_pickup_shelf_with_updated_field )
+    $t->post_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$hold_pickup_shelf_id" => json => $params )
         ->status_is(404);
 
     $schema->storage->txn_rollback;
