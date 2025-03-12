@@ -56,7 +56,7 @@ sub get {
 
     return try {
         my $hold_pickup_shelf = $c->objects->find( Koha::HoldPickupShelves->new, $c->param('hold_pickup_shelf_id') );
-        return $c->render_resource_not_found("Record source")
+        return $c->render_resource_not_found("Hold pickup shelf")
             unless $hold_pickup_shelf;
 
         return $c->render( status => 200, openapi => $hold_pickup_shelf );

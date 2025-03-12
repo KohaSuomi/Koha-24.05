@@ -10,7 +10,7 @@ properties:
     type: string
   library_id:
     description: Library identifier
-    type: integer
+    type: string
   items_limit:
     description: How many items can be placed on this shelf
     type: integer
