@@ -1037,8 +1037,13 @@ sub CanBookBeIssued {
     # CHECKPREVCHECKOUT: CHECK IF ITEM HAS EVER BEEN LENT TO PATRON
     #
     $patron = Koha::Patrons->find( $patron->borrowernumber ); # FIXME Refetch just in case, to avoid regressions. But must not be needed
-    if ( $patron->wants_check_for_previous_checkout && $patron->do_check_for_previous_checkout($item_unblessed) ) {
-        $needsconfirmation{PREVISSUE} = 1;
+    my $check_previous_checkout = $patron->do_check_for_previous_checkout($item_unblessed);
+    if ( $patron->wants_check_for_previous_checkout && $check_previous_checkout ) {
+        if ( $check_previous_checkout eq "currentlycheckedout" ) {
+            $needsconfirmation{CURRENTISSUE} = 1;
+        } else {
+            $needsconfirmation{PREVISSUE} = 1;
+        }
     }
 
     #
