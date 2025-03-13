@@ -146,7 +146,9 @@ sub GetMessageItems {
 
     my $results = Koha::Notice::Messages->search(
         $search_params,
-        {   
+        {
+            order_by => [ { -desc => 'message_id' }, { -desc => 'time_queued' } ],
+
             borrowernumber => $borrowernumber,
             rows => $rows,
             page => $page
@@ -181,6 +183,8 @@ if ($run_report) {
             page           => $page,
         }
     );
+    
+    #$items = reverse($items);
 
     my $pages = int( $total / $limit ) + ( ( $total % $limit ) > 0 ? 1 : 0 );
     $template->param(
