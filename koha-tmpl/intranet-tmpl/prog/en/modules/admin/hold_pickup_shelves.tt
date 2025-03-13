@@ -31,6 +31,8 @@
     [% INCLUDE 'js-patron-format.inc' %]
     [% INCLUDE 'js-date-format.inc' %]
 
+    [% Asset.js("js/vue/dist/admin/hold_pickup_shelves.js") | $raw %]
+
 [% END %]
 
 [% INCLUDE 'intranet-bottom.inc' %]
