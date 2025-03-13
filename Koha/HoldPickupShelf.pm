@@ -21,12 +21,25 @@ package Koha::HoldPickupShelf;
 use Modern::Perl;
 
 use base qw(Koha::Object);
+use Koha::Library;
 
 =head1 NAME
 
 Koha::HoldPickupShelf - Koha HoldPickupShelf Object class
 
 =head1 API
+
+=head3 library
+
+Returns the related library object.
+
+=cut
+
+sub library {
+    my ($self) = @_;
+    my $rs = $self->_result->library;
+    return Koha::Library->_new_from_dbic($rs);
+}
 
 =head2 Internal methods
 
