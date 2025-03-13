@@ -17,13 +17,14 @@ return {
 
         unless ( TableExists('hold_pickup_shelves') ) {
             $dbh->do(q{
-                CREATE TABLE IF NOT EXISTS hold_pickup_shelves (
+                CREATE TABLE hold_pickup_shelves (
                     hold_pickup_shelf_id INT AUTO_INCREMENT PRIMARY KEY,
                     library_id VARCHAR(10) NOT NULL,
                     shelf_name VARCHAR(100) NOT NULL,
-                    items_limit INT NOT NULL
-                    UNIQUE KEY (library_id, shelf_name)
-                )
+                    items_limit INT NOT NULL,
+                    UNIQUE KEY (library_id, shelf_name),
+                    FOREIGN KEY (library_id) REFERENCES branches(branchcode) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             });
 
             say_success( $out, "Added new table 'hold_pickup_shelves'" );
