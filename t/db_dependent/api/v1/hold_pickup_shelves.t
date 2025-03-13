@@ -37,7 +37,7 @@ my $t = Test::Mojo->new('Koha::REST::V1');
 
 subtest 'list() tests' => sub {
 
-    plan tests => 12;
+    plan tests => 14;
 
     $schema->storage->txn_begin;
 
@@ -85,6 +85,11 @@ subtest 'list() tests' => sub {
 
     $t->get_ok("//$userid:$password@/api/v1/holds/pickup_shelves?q={\"hold_pickup_shelf_id\": $id}")->status_is(200)
         ->json_is( '' => [] );
+
+    # Test x-koha-embed header
+
+    $t->get_ok("//$userid:$password@/api/v1/holds/pickup_shelves?_per_page=10", { 'x-koha-embed' => 'library' } )
+        ->status_is( 200, 'REST3.2.2' );
 
     $schema->storage->txn_rollback;
 };

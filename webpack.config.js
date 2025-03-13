@@ -8,6 +8,7 @@ module.exports = {
     erm: "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/erm.ts",
     preservation: "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/preservation.ts",
     "admin/record_sources": "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/admin/record_sources.ts",
+    "admin/hold_pickup_shelves": "./koha-tmpl/intranet-tmpl/prog/js/vue/modules/admin/hold_pickup_shelves.ts",
   },
   output: {
     filename: "[name].js",

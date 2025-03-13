@@ -4,6 +4,7 @@ import AcquisitionAPIClient from "./acquisition-api-client";
 import AVAPIClient from "./authorised-values-api-client";
 import ItemAPIClient from "./item-api-client";
 import RecordSourcesAPIClient from "./record-sources-api-client";
+import HoldPickupShelvesAPIClient from "./hold-pickup-shelves-api-client";
 import SysprefAPIClient from "./system-preferences-api-client";
 import PreservationAPIClient from "./preservation-api-client";
 
@@ -16,4 +17,5 @@ export const APIClient = {
     sysprefs: new SysprefAPIClient(),
     preservation: new PreservationAPIClient(),
     record_sources: new RecordSourcesAPIClient(),
+    hold_pickup_shelves: new HoldPickupShelvesAPIClient(),
 };
