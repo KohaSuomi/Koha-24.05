@@ -32,6 +32,7 @@ __PACKAGE__->table("hold_pickup_shelves");
 =head2 library_id
 
   data_type: 'varchar'
+  is_foreign_key: 1
   is_nullable: 0
   size: 10
 
@@ -52,7 +53,7 @@ __PACKAGE__->add_columns(
   "hold_pickup_shelf_id",
   { data_type => "integer", is_auto_increment => 1, is_nullable => 0 },
   "library_id",
-  { data_type => "varchar", is_nullable => 0, size => 10 },
+  { data_type => "varchar", is_foreign_key => 1, is_nullable => 0, size => 10 },
   "shelf_name",
   { data_type => "varchar", is_nullable => 0, size => 100 },
   "items_limit",
@@ -89,6 +90,21 @@ __PACKAGE__->add_unique_constraint("library_id", ["library_id", "shelf_name"]);
 
 =head1 RELATIONS
 
+=head2 library
+
+Type: belongs_to
+
+Related object: L<Koha::Schema::Result::Branch>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "library",
+  "Koha::Schema::Result::Branch",
+  { branchcode => "library_id" },
+  { is_deferrable => 1, on_delete => "CASCADE", on_update => "RESTRICT" },
+);
+
 =head2 reserves
 
 Type: has_many
@@ -105,8 +121,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07051 @ 2025-03-11 14:35:51
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:r1faM3C5NDio9OPIOS4Vfg
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2025-03-13 09:20:25
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ren2j1Peg/q3KXZ/6H5CRQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
