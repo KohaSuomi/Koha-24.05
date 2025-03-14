@@ -7,6 +7,7 @@ import RecordSourcesAPIClient from "./record-sources-api-client";
 import HoldPickupShelvesAPIClient from "./hold-pickup-shelves-api-client";
 import SysprefAPIClient from "./system-preferences-api-client";
 import PreservationAPIClient from "./preservation-api-client";
+import LibraryAPIClient from "./library-api-client";
 
 export const APIClient = {
     erm: new ERMAPIClient(),
@@ -18,4 +19,5 @@ export const APIClient = {
     preservation: new PreservationAPIClient(),
     record_sources: new RecordSourcesAPIClient(),
     hold_pickup_shelves: new HoldPickupShelvesAPIClient(),
+    libraries: new LibraryAPIClient(),
 };
