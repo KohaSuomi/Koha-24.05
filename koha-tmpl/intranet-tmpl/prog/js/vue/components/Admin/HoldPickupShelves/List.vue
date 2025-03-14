@@ -9,13 +9,16 @@
             />
         </Toolbar>
         <h1>{{ title }}</h1>
-        <div class="page-section">
+        <div v-if="hold_pickup_shelves_any > 0" class="page-section">
             <KohaTable
                 ref="table"
                 v-bind="tableOptions"
                 @edit="doEdit"
                 @delete="doDelete"
             ></KohaTable>
+        </div>
+        <div v-else class="alert alert-info">
+            {{ $__("There are no hold pickup shelves defined") }}
         </div>
     </div>
 </template>
@@ -69,8 +72,8 @@ export default {
                 url: "/api/v1/holds/pickup_shelves",
                 options: {embed: "library"},
             },
-            initialized: true,
-            hold_pickup_shelves: [],
+            initialized: false,
+            hold_pickup_shelves_any: 0,
         };
     },
     setup() {
@@ -83,17 +86,17 @@ export default {
             setConfirmationDialog,
         };
     },
-    // beforeRouteEnter(to, from, next) {
-    //     next(vm => {
-    //         vm.listHoldPickupShelves().then(() => (vm.initialized = true));
-    //     });
-    // },
+    beforeRouteEnter(to, from, next) {
+        next(vm => {
+            vm.anyHoldPickupShelves().then(() => (vm.initialized = true));
+        });
+    },
     methods: {
-        async listHoldPickupShelves() {
+        async anyHoldPickupShelves() {
             const client = APIClient.hold_pickup_shelves;
-            await client.hold_pickup_shelves.getAll({}, {}, { "x-koha-embed": "library" }).then(
+            await client.hold_pickup_shelves.getAll({}, {_page: 1, _per_page: 1}).then(
                 hold_pickup_shelves => {
-                    this.hold_pickup_shelves = hold_pickup_shelves;
+                    this.hold_pickup_shelves_any = hold_pickup_shelves.length;
                 },
                 error => {}
             );
