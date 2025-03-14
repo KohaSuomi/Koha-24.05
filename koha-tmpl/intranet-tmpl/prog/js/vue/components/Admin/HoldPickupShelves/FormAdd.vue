@@ -16,11 +16,18 @@
                         <label class="required" for="library_id">
                             {{ $__("Library ID") }}:
                         </label>
-                        <input
+                        <select
                             id="library_id"
                             v-model="hold_pickup_shelf.library_id"
                             required
-                        />
+                        >
+                            <option
+                                v-for="library in libraries"
+                                :value="library.library_id"
+                                :key="library.library_id"
+                                >{{ library.name }}</option
+                            >
+                        </select>
                         <span class="required">{{ $__("Required") }}</span>
                     </li>
                     <li>
@@ -70,6 +77,9 @@ import { setMessage, setError, setWarning } from "../../../messages";
 import { APIClient } from "../../../fetch/api-client.js";
 
 export default {
+    props: {
+        libraries: Array,
+    },
     setup() {
         const { setMessage } = inject("mainStore");
         return {
