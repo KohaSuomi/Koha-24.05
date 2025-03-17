@@ -147,7 +147,7 @@ sub GetMessageItems {
     my $results = Koha::Notice::Messages->search(
         $search_params,
         {
-            order_by => [ { -desc => 'message_id' }, { -desc => 'time_queued' } ],
+            order_by => [ { -desc => 'updated_on' } ],
 
             borrowernumber => $borrowernumber,
             rows => $rows,
