@@ -38,5 +38,13 @@ return {
 
         say_success( $out, "Added column 'reserves.hold_pickup_shelf_id'" );
 
+        $dbh->do(q{
+            ALTER TABLE old_reserves
+            ADD COLUMN hold_pickup_shelf_id INT,
+            ADD FOREIGN KEY (hold_pickup_shelf_id) REFERENCES hold_pickup_shelves(hold_pickup_shelf_id)
+        });
+
+        say_success( $out, "Added column 'old_reserves.hold_pickup_shelf_id'" );
+
     },
 };
