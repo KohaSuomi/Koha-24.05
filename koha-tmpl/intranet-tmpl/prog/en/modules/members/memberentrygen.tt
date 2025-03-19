@@ -1238,7 +1238,7 @@ legend.collapsed i.fa.fa-caret-down::before {
                                                             <label for="to">
                                                         [% END %]
                                                         <p hidden>
-                                                                Expiry date:
+                                                                Expiry date (leave blank for auto calc):
                                                             </label>
                                                             [% UNLESS ( op == 'add_form' ) %]
                                                                 <input type="text" id="to" name="dateexpiry" maxlength="10"  size="10" value="[% borrower_data.dateexpiry | html UNLESS op == 'duplicate' %]" class="flatpickr"  />
@@ -1259,7 +1259,7 @@ legend.collapsed i.fa.fa-caret-down::before {
                                                         [% ELSE %]
                                                             <label for="to">
                                                         [% END %]
-                                                                Expiry date:
+                                                                Expiry date (leave blank for auto calc):
                                                             </label>
                                                             [% UNLESS ( op == 'add_form' ) %]
                                                                 <input type="text" id="to" name="dateexpiry" maxlength="10"  size="10" value="[% borrower_data.dateexpiry | html UNLESS op == 'duplicate' %]" class="flatpickr"  />
