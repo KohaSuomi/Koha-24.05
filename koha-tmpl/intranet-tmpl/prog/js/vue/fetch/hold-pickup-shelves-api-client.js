@@ -34,7 +34,18 @@ export class HoldPickupShelvesAPIClient extends HttpClient {
                     params,
                     headers: {},
                 }),
-        };
+        };  
+    }
+    get available() {
+        return {
+            getAll: (query, params) =>
+                this.getAll({
+                    endpoint: "/available",
+                    query,
+                    params,
+                    headers: {},
+                }),
+        }
     }
 }
 

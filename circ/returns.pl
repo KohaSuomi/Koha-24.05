@@ -150,6 +150,7 @@ if ( $query->param('reserve_id') && $op eq 'cud-affect_reserve') {
     my $diffBranchReturned = $query->param('diffBranch');
     my $cancel_reserve = $query->param('cancel_reserve');
     my $cancel_reason = $query->param('cancel_reason');
+    my $hold_pickup_shelf_id = $query->param('hold_pickup_shelf_id');
 
     # fix up item type for display
     my $item = Koha::Items->find( $itemnumber );
@@ -165,7 +166,7 @@ if ( $query->param('reserve_id') && $op eq 'cud-affect_reserve') {
 
         # diffBranchSend tells ModReserveAffect whether document is expected in this library or not,
         # i.e., whether to apply waiting status
-        ModReserveAffect( $itemnumber, $borrowernumber, $diffBranchSend, $reserve_id, $desk_id );
+        ModReserveAffect( $itemnumber, $borrowernumber, $diffBranchSend, $reserve_id, $desk_id, undef, $hold_pickup_shelf_id );
 
         if ($diffBranchSend) {
             ModItemTransfer( $itemnumber, $userenv_branch, $diffBranchSend, 'Reserve' );

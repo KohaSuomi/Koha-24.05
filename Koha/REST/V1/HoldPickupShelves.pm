@@ -65,6 +65,33 @@ sub get {
     };
 }
 
+=head3 available_shelves 
+
+=cut
+
+sub available_shelves {
+    my $c = shift->openapi->valid_input or return;
+
+    return try {
+        my $library_id = $c->param('library_id');
+        my $biblio_id = $c->param('biblio_id');
+        my $hold_pickup_shelves = $library_id ? Koha::HoldPickupShelves->search({ library_id => $library_id })->unblessed : Koha::HoldPickupShelves->search->unblessed;
+        my $response = [];
+        foreach my $shelf ( @$hold_pickup_shelves ) {
+            my $hold_pickup_shelf = Koha::HoldPickupShelf->new_from_api( $shelf );
+            if ($hold_pickup_shelf->holds_count < $hold_pickup_shelf->items_limit && (!defined $biblio_id || !$hold_pickup_shelf->duplicate_record($biblio_id))) {
+                push @{$response}, $hold_pickup_shelf;
+            }
+        }
+        return $c->render(
+            status  => 200,
+            openapi => $response
+        );
+    } catch {
+        $c->unhandled_exception($_);
+    };
+}
+
 =head3 add
 
 =cut

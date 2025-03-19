@@ -22,6 +22,7 @@ use Modern::Perl;
 
 use base qw(Koha::Object);
 use Koha::Library;
+use Koha::Holds;
 
 =head1 NAME
 
@@ -39,6 +40,29 @@ sub library {
     my ($self) = @_;
     my $rs = $self->_result->library;
     return Koha::Library->_new_from_dbic($rs);
+}
+
+=head3 holds_count
+
+Returns the number of holds on this hold pickup shelf.
+
+=cut
+
+sub holds_count {
+    my ($self) = @_;
+    return Koha::Holds->search({ hold_pickup_shelf_id => $self->_result->hold_pickup_shelf_id })->count;
+}
+
+=head3 duplicate_record
+
+Checks if shelf already has a record in the database.
+
+=cut
+
+sub duplicate_record {
+    my ($self, $biblio_id) = @_;
+    my $rs = Koha::Holds->search({ hold_pickup_shelf_id => $self->_result->hold_pickup_shelf_id, biblionumber => $biblio_id });
+    return $rs->count();
 }
 
 =head2 Internal methods

@@ -867,6 +867,9 @@
                                                         <h4><strong>Transfer to:</strong> [% Branches.GetName( destbranch ) | html %]</h4>
                                                     [% ELSE %]
                                                         <h4><strong>Hold at</strong> [% Branches.GetName( destbranch ) | html %]</h4>
+                                                        [% IF Koha.Preference('HoldPickupShelves') %]
+                                                            <div id="hold-pickup-shelves-view"></div>
+                                                        [% END %]
                                                     [% END %]
 
                                                     [% FOREACH inputloo IN inputloop %]
@@ -1440,6 +1443,7 @@
     [% INCLUDE 'calendar.inc' %]
     [% Asset.js("js/pages/circulation.js") | $raw %]
     [% Asset.js("js/modal_printer.js") | $raw %]
+    [% Asset.js("js/vue/dist/hold_pickup_shelves.js") | $raw %]
     [% IF ( ReturnClaims ) %]
         <script>
             /* Set a variable needed by resolve_claim_modal.js */

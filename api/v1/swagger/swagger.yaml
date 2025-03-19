@@ -395,6 +395,8 @@ paths:
     $ref: ./paths/hold_pickup_shelves.yaml#/~1holds~1pickup_shelves
   "/holds/pickup_shelves/{hold_pickup_shelf_id}":
     $ref: "./paths/hold_pickup_shelves.yaml#/~1holds~1pickup_shelves~1{hold_pickup_shelf_id}"
+  "/holds/pickup_shelves/available":
+    $ref: "./paths/hold_pickup_shelves.yaml#/~1holds~1pickup_shelves~1available"
   /ill/backends:
     $ref: ./paths/ill_backends.yaml#/~1ill~1backends
   "/ill/backends/{ill_backend_id}":

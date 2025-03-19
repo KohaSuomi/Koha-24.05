@@ -1174,7 +1174,7 @@ This function also removes any entry of the hold in holds queue table.
 =cut
 
 sub ModReserveAffect {
-    my ( $itemnumber, $borrowernumber, $transferToDo, $reserve_id, $desk_id, $notify_library ) = @_;
+    my ( $itemnumber, $borrowernumber, $transferToDo, $reserve_id, $desk_id, $notify_library, $hold_pickup_shelf_id ) = @_;
     my $dbh = C4::Context->dbh;
 
     # we want to attach $itemnumber to $borrowernumber, find the biblionumber
@@ -1210,6 +1210,7 @@ sub ModReserveAffect {
         $hold->set_processing();
     } else {
         $hold->set_waiting($desk_id);
+        $hold->set( { hold_pickup_shelf_id => $hold_pickup_shelf_id } )->store if $hold_pickup_shelf_id;
         _koha_notify_reserve( $hold->reserve_id ) unless $already_on_shelf;
         # Complete transfer if one exists
         my $transfer = $hold->item->get_transfer;
