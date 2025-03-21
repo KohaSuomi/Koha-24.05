@@ -379,13 +379,13 @@ __PACKAGE__->belongs_to(
 
 Type: belongs_to
 
-Related object: L<Koha::Schema::Result::HoldPickupShelve>
+Related object: L<Koha::Schema::Result::HoldPickupShelf>
 
 =cut
 
 __PACKAGE__->belongs_to(
   "hold_pickup_shelf",
-  "Koha::Schema::Result::HoldPickupShelve",
+  "Koha::Schema::Result::HoldPickupShelf",
   { hold_pickup_shelf_id => "hold_pickup_shelf_id" },
   {
     is_deferrable => 1,
