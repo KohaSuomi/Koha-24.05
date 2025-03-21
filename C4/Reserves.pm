@@ -1834,14 +1834,15 @@ sub _koha_notify_reserve {
     my %letter_params = (
         module => 'reserves',
         branchcode => $hold->branchcode,
-        lang => $patron->lang,
-        tables => {
-            'branches'       => $library->unblessed,
-            'borrowers'      => $patron->unblessed,
-            'biblio'         => $hold->biblionumber,
-            'biblioitems'    => $hold->biblionumber,
-            'reserves'       => $hold->unblessed,
-            'items'          => $hold->itemnumber,
+        lang       => $patron->lang,
+        substitute => { hold_pickup_shelf => $hold->hold_pickup_shelf->shelf_name },
+        tables     => {
+            'branches'    => $library->unblessed,
+            'borrowers'   => $patron->unblessed,
+            'biblio'      => $hold->biblionumber,
+            'biblioitems' => $hold->biblionumber,
+            'reserves'    => $hold->unblessed,
+            'items'       => $hold->itemnumber,
         },
     );
 
@@ -1916,7 +1917,7 @@ sub _koha_notify_hold_changed {
         module      => 'reserves',
         letter_code => 'HOLD_CHANGED',
         branchcode  => $hold->branchcode,
-        substitute  => { today => output_pref( dt_from_string ) },
+        substitute  => { today => output_pref(dt_from_string), hold_pickup_shelf => $hold->hold_pickup_shelf->shelf_name },
         tables      => {
             'branches'    => $library->unblessed,
             'borrowers'   => $patron->unblessed,
@@ -2127,11 +2128,12 @@ sub RevertWaitingStatus {
     ## Fix up the currently waiting reserve
     $hold->set(
         {
-            priority       => 1,
-            found          => undef,
-            waitingdate    => undef,
-            expirationdate => $hold->patron_expiration_date,
-            itemnumber     => $hold->item_level_hold ? $hold->itemnumber : undef,
+            priority             => 1,
+            found                => undef,
+            waitingdate          => undef,
+            expirationdate       => $hold->patron_expiration_date,
+            itemnumber           => $hold->item_level_hold ? $hold->itemnumber : undef,
+            hold_pickup_shelf_id => undef,
         }
     )->store( { hold_reverted => 1 } );
 
