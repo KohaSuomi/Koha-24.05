@@ -57,6 +57,7 @@ use Koha::Auth::Permissions;
 use Koha::Token;
 use Koha::Exceptions::Token;
 use Koha::Session;
+use Data::Dumper;
 
 # use utf8;
 
@@ -944,13 +945,30 @@ sub checkauth {
                 $auth_state = 'failed';
             } elsif (!$logout) {
 
-                $cookie = $cookie_mgr->replace_in_list( $cookie, $query->cookie(
-                    -name     => 'CGISESSID',
-                    -value    => $session->id,
-                    -HttpOnly => 1,
-                    -secure => ( C4::Context->https_enabled() ? 1 : 0 ),
-                    -sameSite => 'Lax',
-                ));
+                #If SCO 
+                Koha::Logger->get->debug(Dumper($session));
+                Koha::Logger->get->debug(Dumper($session->param( 'interface')));
+
+                if ( ($session->param( 'sco_user') == 1) ) {
+                    Koha::Logger->get->debug(   "Auth in OPAC" );
+                    $cookie = $cookie_mgr->replace_in_list( $cookie, $query->cookie(
+                        -expires    => '+12M',
+                        -name     => 'CGISESSID',
+                        -value    => $session->id,
+                        -HttpOnly => 1,
+                        -secure => ( C4::Context->https_enabled() ? 1 : 0 ),
+                        -sameSite => 'Lax',
+                    ));
+                }
+                else {
+                    $cookie = $cookie_mgr->replace_in_list( $cookie, $query->cookie(
+                        -name     => 'CGISESSID',
+                        -value    => $session->id,
+                        -HttpOnly => 1,
+                        -secure => ( C4::Context->https_enabled() ? 1 : 0 ),
+                        -sameSite => 'Lax',
+                    ));                    
+                }
 
                 $flags = haspermission( $userid, $flagsrequired );
                 unless ( $flags ) {
