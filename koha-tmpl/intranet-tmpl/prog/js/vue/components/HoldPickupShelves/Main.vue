@@ -2,27 +2,40 @@
     <div class="form-group" v-if="shelves.length > 0">
         <label for="hold_pickup_shelf_id">Select available shelf</label>
         <select class="form-control" v-model="selectedShelf">
+            <option value=""></option>
             <option v-for="shelf in shelves" :key="shelf.hold_pickup_shelf_id" :value="shelf.hold_pickup_shelf_id">
                 {{ shelf.shelf_name }}
             </option>
         </select>
     </div>
 </template>
+<style scoped>
+    .form-group {
+        margin: 20px 0;
+        max-width: 400px;
+    }
+</style>
 <script>
 import { APIClient } from "../../fetch/api-client.js";
 export default {
+    props: {
+        biblio_id: {
+            type: Number,
+            required: true
+        },
+        library_id: {
+            type: String,
+            required: true
+        }
+    },
     data() {
         return {
             shelves: [],
             selectedShelf: null,
-            biblio_id: null,
-            library_id: null
         }
     },
     async beforeMount() {
-        await this.getParameters().then(() => {
-            this.getShelves();
-        });
+        this.getShelves();
     },
     watch: {
         selectedShelf() {
@@ -39,10 +52,6 @@ export default {
             if (this.shelves.length > 0) {
                 this.selectedShelf = this.shelves[0].hold_pickup_shelf_id;
             }
-        },
-        async getParameters() {
-            this.biblio_id = document.getElementsByName("biblionumber")[0].value;
-            this.library_id = document.getElementsByName("diffBranch")[0].value;
         }
     }
 };

@@ -20,13 +20,18 @@ const pinia = createPinia();
 import App from "../components/HoldPickupShelves/Main.vue";
 import i18n from "../i18n";
 
-const app = createApp(App);
+const view = document.getElementById('hold-pickup-shelves-view');
+if (view) {
+    const app = createApp(App, {
+        library_id: view.getAttribute('data-library-id'),
+        biblio_id: view.getAttribute('data-biblio-id'),
+    });
+    const rootComponent = app
+        .use(i18n)
+        .use(pinia)
+        .component("font-awesome-icon", FontAwesomeIcon)
+        .component("v-select", vSelect);
 
-const rootComponent = app
-    .use(i18n)
-    .use(pinia)
-    .component("font-awesome-icon", FontAwesomeIcon)
-    .component("v-select", vSelect);
-
-app.config.unwrapInjectedRef = true;
-app.mount("#hold-pickup-shelves-view");
+    app.config.unwrapInjectedRef = true;
+    app.mount(view);
+}
