@@ -889,6 +889,7 @@
                                                     <input type="hidden" name="forgivemanualholdsexpire" value="[% forgivemanualholdsexpire | html %]" />
                                                     <input type="hidden" name="return_date_override" value="[% return_date_override | html %]" />
                                                     <input type="hidden" name="return_date_override_remember" value="[% return_date_override_remember | html %]" />
+                                                    <input type="hidden" name="hold_pickup_shelf_id" value="" />
                                                     [% INCLUDE all_checkin_messages %]
                                                 </div>
 
