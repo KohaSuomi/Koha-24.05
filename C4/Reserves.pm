@@ -1830,12 +1830,13 @@ sub _koha_notify_reserve {
 
     my $library = Koha::Libraries->find( $hold->branchcode );
     my $from_email_address = $library->from_email_address;
+    my $shelf_name = $hold->hold_pickup_shelf ? $hold->hold_pickup_shelf->shelf_name : undef;
 
     my %letter_params = (
         module => 'reserves',
         branchcode => $hold->branchcode,
         lang       => $patron->lang,
-        substitute => { hold_pickup_shelf => $hold->hold_pickup_shelf->shelf_name },
+        substitute => { hold_pickup_shelf => $shelf_name },
         tables     => {
             'branches'    => $library->unblessed,
             'borrowers'   => $patron->unblessed,
@@ -1912,12 +1913,13 @@ sub _koha_notify_hold_changed {
 
     my $patron = $hold->patron;
     my $library = $hold->branch;
+    my $shelf_name = $hold->hold_pickup_shelf ? $hold->hold_pickup_shelf->shelf_name : undef;
 
     my $letter = C4::Letters::GetPreparedLetter(
         module      => 'reserves',
         letter_code => 'HOLD_CHANGED',
         branchcode  => $hold->branchcode,
-        substitute  => { today => output_pref(dt_from_string), hold_pickup_shelf => $hold->hold_pickup_shelf->shelf_name },
+        substitute  => { today => output_pref(dt_from_string), hold_pickup_shelf => $shelf_name },
         tables      => {
             'branches'    => $library->unblessed,
             'borrowers'   => $patron->unblessed,
