@@ -21,7 +21,7 @@ return {
                     hold_pickup_shelf_id INT AUTO_INCREMENT PRIMARY KEY,
                     library_id VARCHAR(10) NOT NULL,
                     shelf_name VARCHAR(100) NOT NULL,
-                    max_limit INT NOT NULL,
+                    max_items INT NOT NULL,
                     UNIQUE KEY (library_id, shelf_name),
                     FOREIGN KEY (library_id) REFERENCES branches(branchcode) ON DELETE CASCADE
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
