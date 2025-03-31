@@ -222,7 +222,7 @@ subtest 'add() tests' => sub {
     my $params = {
         library_id => $library->id,
         shelf_name => 'test1',
-        items_limit => 10,
+        max_items => 10,
     };
 
     $nonprivilegedpatron->set_password( { password => $password, skip_validation => 1 } );
@@ -283,7 +283,7 @@ subtest 'update() tests' => sub {
     my $params = {
         library_id => $library->id,
         shelf_name => 'test1',
-        items_limit => 10,
+        max_items => 10,
     };
 
     my $hold_pickup_shelf    = Koha::HoldPickupShelf->new( $params )->store;
@@ -301,14 +301,14 @@ subtest 'update() tests' => sub {
     };
 
     $t->put_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$hold_pickup_shelf_id" => json => $params )
-        ->status_is(400)->json_is( "/errors" => [ { message => "Missing property.", path => "/body/items_limit" } ] );
+        ->status_is(400)->json_is( "/errors" => [ { message => "Missing property.", path => "/body/max_items" } ] );
 
     # Full object update on PUT
     
     $params = {
         library_id => $library->id,
         shelf_name => 'test3',
-        items_limit => 15,
+        max_items => 15,
     };
 
     $t->put_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$hold_pickup_shelf_id" => json => $params )
@@ -318,7 +318,7 @@ subtest 'update() tests' => sub {
     $params = {
         library_id => $library->id,
         shelf_name => 'test3',
-        items_limit => 15,
+        max_items => 15,
         potato => 'potato',
     };
 
@@ -339,7 +339,7 @@ subtest 'update() tests' => sub {
     $params = {
         library_id => $library->id,
         shelf_name => 'test3',
-        items_limit => 15,
+        max_items => 15,
     };
 
     $t->put_ok( "//$userid:$password@/api/v1/holds/pickup_shelves/$non_existent_id" => json => $params )

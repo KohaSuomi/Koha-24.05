@@ -42,12 +42,12 @@
                         <span class="required">{{ $__("Required") }}</span>
                     </li>
                     <li>
-                        <label class="required" for="items_limit">
-                            {{ $__("Items limit") }}:
+                        <label class="required" for="max_items">
+                            {{ $__("Max items") }}:
                         </label>
                         <input
-                            id="items_limit"
-                            v-model="hold_pickup_shelf.items_limit"
+                            id="max_items"
+                            v-model="hold_pickup_shelf.max_items"
                             required
                         />
                         <span class="required">{{ $__("Required") }}</span>
@@ -92,7 +92,7 @@ export default {
                 hold_pickup_shelf_id: null,
                 shelf_name: "",
                 library_id: "",
-                items_limit: 0,
+                max_items: 0,
             },
             initialized: false,
         };

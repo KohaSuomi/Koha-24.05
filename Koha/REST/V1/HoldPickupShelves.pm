@@ -79,7 +79,7 @@ sub available_shelves {
         my $response = [];
         foreach my $shelf ( @$hold_pickup_shelves ) {
             my $hold_pickup_shelf = Koha::HoldPickupShelf->new_from_api( $shelf );
-            if ($hold_pickup_shelf->holds_count < $hold_pickup_shelf->items_limit && (!defined $biblio_id || !$hold_pickup_shelf->duplicate_record($biblio_id))) {
+            if ($hold_pickup_shelf->holds_count < $hold_pickup_shelf->max_items && (!defined $biblio_id || !$hold_pickup_shelf->duplicate_record($biblio_id))) {
                 push @{$response}, $hold_pickup_shelf;
             }
         }

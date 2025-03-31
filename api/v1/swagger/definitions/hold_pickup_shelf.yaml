@@ -11,7 +11,7 @@ properties:
   library_id:
     description: Library identifier
     type: string
-  items_limit:
+  max_items:
     description: How many items can be placed on this shelf
     type: integer
   library: 
@@ -21,4 +21,4 @@ additionalProperties: false
 required:
   - shelf_name
   - library_id
-  - items_limit
+  - max_items

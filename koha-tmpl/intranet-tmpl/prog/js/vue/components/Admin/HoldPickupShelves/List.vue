@@ -52,8 +52,8 @@ export default {
                         searchable: true,
                     },
                     {
-                        title: __("Items limit"),
-                        data: "items_limit",
+                        title: __("Max items"),
+                        data: "max_items",
                         searchable: true,
                         orderable: true,
                     },
