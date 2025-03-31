@@ -224,12 +224,6 @@ Is the hold placed at item level
 
 Is this a non priority hold
 
-=head2 hold_pickup_shelf_id
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-
 =cut
 
 __PACKAGE__->add_columns(
@@ -297,8 +291,6 @@ __PACKAGE__->add_columns(
   { data_type => "tinyint", default_value => 0, is_nullable => 0 },
   "non_priority",
   { data_type => "tinyint", default_value => 0, is_nullable => 0 },
-  "hold_pickup_shelf_id",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -375,26 +367,6 @@ __PACKAGE__->belongs_to(
   },
 );
 
-=head2 hold_pickup_shelf
-
-Type: belongs_to
-
-Related object: L<Koha::Schema::Result::HoldPickupShelve>
-
-=cut
-
-__PACKAGE__->belongs_to(
-  "hold_pickup_shelf",
-  "Koha::Schema::Result::HoldPickupShelve",
-  { hold_pickup_shelf_id => "hold_pickup_shelf_id" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "RESTRICT",
-    on_update     => "RESTRICT",
-  },
-);
-
 =head2 item_group
 
 Type: belongs_to
@@ -456,8 +428,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07051 @ 2025-03-19 12:04:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zyWKXP0wvUw0QI6H/iCLAQ
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2024-04-05 06:44:57
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:SQp2OEYb3im1x3A+W0h37w
 
 __PACKAGE__->belongs_to(
   "item",
