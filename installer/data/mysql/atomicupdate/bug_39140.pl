@@ -9,7 +9,7 @@ return {
         my ( $dbh, $out ) = @$args{qw(dbh out)};
 
         $dbh->do(q{
-            INSERT INTO systempreferences (variable,value,options,explanation,type) VALUES
+            INSERT IGNORE INTO systempreferences (variable,value,options,explanation,type) VALUES
             ('HoldPickupShelves','0','0=No|1=Yes','Define hold pickup shelves', 'YesNo')
         });
 
@@ -30,21 +30,24 @@ return {
             say_success( $out, "Added new table 'hold_pickup_shelves'" );
         }
 
-        $dbh->do(q{
-            ALTER TABLE reserves
-            ADD COLUMN hold_pickup_shelf_id INT,
-            ADD FOREIGN KEY (hold_pickup_shelf_id) REFERENCES hold_pickup_shelves(hold_pickup_shelf_id)
-        });
+        if ( !column_exists( 'reserves', 'hold_pickup_shelf_id' ) ) {
+            $dbh->do(q{
+                ALTER TABLE reserves
+                ADD COLUMN hold_pickup_shelf_id INT,
+                ADD FOREIGN KEY (hold_pickup_shelf_id) REFERENCES hold_pickup_shelves(hold_pickup_shelf_id)
+            });
 
-        say_success( $out, "Added column 'reserves.hold_pickup_shelf_id'" );
+            say_success( $out, "Added column 'reserves.hold_pickup_shelf_id'" );
+        }
+        if ( !column_exists( 'old_reserves', 'hold_pickup_shelf_id' ) ) {
+            $dbh->do(q{
+                ALTER TABLE old_reserves
+                ADD COLUMN hold_pickup_shelf_id INT,
+                ADD FOREIGN KEY (hold_pickup_shelf_id) REFERENCES hold_pickup_shelves(hold_pickup_shelf_id)
+            });
 
-        $dbh->do(q{
-            ALTER TABLE old_reserves
-            ADD COLUMN hold_pickup_shelf_id INT,
-            ADD FOREIGN KEY (hold_pickup_shelf_id) REFERENCES hold_pickup_shelves(hold_pickup_shelf_id)
-        });
-
-        say_success( $out, "Added column 'old_reserves.hold_pickup_shelf_id'" );
+            say_success( $out, "Added column 'old_reserves.hold_pickup_shelf_id'" );
+        }
 
     },
 };
