@@ -31,6 +31,11 @@ properties:
       - integer
       - "null"
     description: The id of the desk
+  hold_pickup_shelf_id:
+    type:
+      - integer
+      - "null"
+    description: The shelf id of the pickup shelf
   cancellation_date:
     type:
       - string
