@@ -72,7 +72,7 @@ sub duplicate_record {
 =cut
 
 sub _type {
-    return 'HoldPickupShelf';
+    return 'HoldPickupShelve';
 }
 
 1;

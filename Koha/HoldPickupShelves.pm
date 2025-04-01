@@ -37,7 +37,7 @@ Koha::HoldPickupShelves - Koha HoldPickupShelves Object class
 =cut
 
 sub _type {
-    return 'HoldPickupShelf';
+    return 'HoldPickupShelve';
 }
 
 =head3 object_class
