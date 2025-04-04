@@ -2192,11 +2192,16 @@ sub ReserveSlip {
     my $patron = $hold->borrower;
     my $reserve = $hold->unblessed;
 
+    my $shelf_name = $hold->hold_pickup_shelf ? $hold->hold_pickup_shelf->shelf_name : undef;
+
     return  C4::Letters::GetPreparedLetter (
         module => 'circulation',
         letter_code => 'HOLD_SLIP',
         branchcode => $branchcode,
         lang => $patron->lang,
+        substitute => {
+            hold_pickup_shelf => $shelf_name,
+        },
         tables => {
             'reserves'    => $reserve,
             'branches'    => $reserve->{branchcode},
