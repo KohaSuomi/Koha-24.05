@@ -54,6 +54,7 @@ use Koha::Item::Transfers;
 use Koha::Items;
 use Koha::Patrons;
 use Koha::Recalls;
+use Koha::HoldPickupShelves;
 
 my $query = CGI->new;
 
@@ -592,11 +593,12 @@ if ( $messages->{'ResFound'} ) {
     my $patron = Koha::Patrons->find( $reserve->{borrowernumber} );
     my $holdmsgpreferences =  C4::Members::Messaging::GetMessagingPreferences( { borrowernumber => $reserve->{'borrowernumber'}, message_name   => 'Hold_Filled' } );
     my $branchCheck = ( $userenv_branch eq $reserve->{branchcode} );
+    my $holdPickupShelfLibraryCheck = Koha::HoldPickupShelves->search({library_id => $reserve->{branchcode}})->next;
     if ( $reserve->{'ResFound'} eq "Waiting" ) {
         $template->param(
             waiting      => $branchCheck ? 1 : undef,
         );
-    } elsif ( C4::Context->preference('HoldsAutoFill') ) {
+    } elsif ( C4::Context->preference('HoldsAutoFill') && !$holdPickupShelfLibraryCheck ) {
         my $item = Koha::Items->find( $itemnumber );
         my $biblio = $item->biblio;
 
