@@ -220,7 +220,7 @@ $(document).ready(function() {
                                 branchSelect +='</select>';
                                 return branchSelect;
                             }
-                            else { return oObj.branchcode.escapeHtml() || ""; }
+                            else { return oObj.branchcode.escapeHtml()+"<br/>"+oObj.hold_pickup_shelf_name.escapeHtml() || ""; }
                         }
                     },
                     { "data": { _: "expirationdate_formatted", "sort": "expirationdate" } },
