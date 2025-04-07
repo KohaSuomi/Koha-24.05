@@ -23,6 +23,7 @@ use Modern::Perl;
 use base qw(Koha::Object);
 use Koha::Library;
 use Koha::Holds;
+use Koha::Exceptions::Object;
 
 =head1 NAME
 
@@ -63,6 +64,25 @@ sub duplicate_record {
     my ($self, $biblio_id) = @_;
     my $rs = Koha::Holds->search({ hold_pickup_shelf_id => $self->_result->hold_pickup_shelf_id, biblionumber => $biblio_id });
     return $rs->count();
+}
+
+=head3 delete
+
+Overridden delete method to prevent system default deletions
+
+=cut
+
+sub delete {
+    my ($self) = @_;
+    warn Data::Dumper::Dumper($self);
+    if ($self->holds_count) {
+        # If there are holds on this pickup shelf, we cannot delete it
+        Koha::Exceptions::Object::FKConstraint->throw(
+            "Cannot delete a pickup shelf that has holds"
+        );
+    }
+
+    return $self->SUPER::delete;
 }
 
 =head2 Internal methods

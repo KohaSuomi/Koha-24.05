@@ -149,15 +149,16 @@ sub delete {
         $hold_pickup_shelf->delete;
         return $c->render_resource_deleted;
     } catch {
-        if ( blessed($_) && ref($_) eq 'Koha::Exceptions::Object::FKConstraintDeletion' ) {
+        if ( blessed($_) && ref($_) eq 'Koha::Exceptions::Object::FKConstraint' ) {
             return $c->render(
                 status  => 409,
                 openapi => {
-                    error      => 'Cannot delete hold pickup shelf',
+                    error      => 'The shelf has items assigned to it',
                     error_code => 'cannot_delete_used',
                 }
             );
         }
+        warn Data::Dumper::Dumper($_);
         $c->unhandled_exception($_);
     };
 }
