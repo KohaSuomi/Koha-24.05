@@ -289,6 +289,11 @@
         required: false
         description: The library id
         type: string
+      - name: patron_id
+        in: query
+        required: false
+        description: The patron id
+        type: integer
       - name: x-koha-embed
         in: header
         required: false

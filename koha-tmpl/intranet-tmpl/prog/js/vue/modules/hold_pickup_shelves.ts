@@ -25,6 +25,7 @@ if (view) {
     const app = createApp(App, {
         library_id: view.getAttribute('data-library-id'),
         biblio_id: view.getAttribute('data-biblio-id'),
+        patron_id: view.getAttribute('data-patron-id'),
     });
     const rootComponent = app
         .use(i18n)

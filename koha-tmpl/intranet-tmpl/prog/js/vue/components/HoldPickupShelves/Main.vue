@@ -26,6 +26,10 @@ export default {
         library_id: {
             type: String,
             required: true
+        },
+        patron_id: {
+            type: Number,
+            required: true
         }
     },
     data() {
@@ -48,7 +52,7 @@ export default {
     methods: {
         async getShelves() {
             const client = APIClient.hold_pickup_shelves;
-            this.shelves = await client.available.getAll({},{biblio_id: this.biblio_id, library_id: this.library_id});
+            this.shelves = await client.available.getAll({},{biblio_id: this.biblio_id, library_id: this.library_id, patron_id: this.patron_id});
             if (this.shelves.length > 0) {
                 this.selectedShelf = this.shelves[0].hold_pickup_shelf_id;
             }
