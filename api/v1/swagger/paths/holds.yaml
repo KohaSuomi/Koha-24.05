@@ -103,6 +103,7 @@
           enum:
             - cancellation_requested
             - biblio
+            - hold_pickup_shelf
             - pickup_library
           collectionFormat: csv
     produces:
