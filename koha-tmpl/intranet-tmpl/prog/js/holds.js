@@ -510,6 +510,7 @@ async function load_holds_queue() {
             $.ajax({
                 method: "GET",
                 url: "/api/v1/holds/?biblio_id="+biblionumber,
+                headers: { "x-koha-embed": "hold_pickup_shelf" },
                 data: {_page: info.page+1, _per_page: info.length, _order_by: 'priority', _match: 'exact'},
                 success: function(data, textStatus, request){
                     totalHolds = request.getResponseHeader('X-Total-Count');
@@ -663,7 +664,8 @@ async function load_holds_queue() {
                     } else if (data.status == 'P') {
                         return __("Item being processed at <strong>%s</strong>").format(libraryname);
                     } else if (data.status == 'W') {
-                        return __("Item waiting at <strong>%s</strong> since %s").format(libraryname, $date(data.waiting_date));
+                        const pickup_shelf = data.hold_pickup_shelf ? 'on pickup shelf '+data.hold_pickup_shelf.shelf_name : '';
+                        return __("Item waiting at <strong>%s</strong> %s since %s").format(libraryname, pickup_shelf, $date(data.waiting_date));
                     } else {
                         return branchSelect;
                     }
