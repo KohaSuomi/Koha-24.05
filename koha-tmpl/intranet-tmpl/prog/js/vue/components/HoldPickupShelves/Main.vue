@@ -1,12 +1,15 @@
 <template>
     <div class="form-group" v-if="shelves.length > 0">
-        <label for="hold_pickup_shelf_id">Select available shelf</label>
+        <label for="hold_pickup_shelf_id">{{ $__('Select available shelf') }}</label>
         <select class="form-control" v-model="selectedShelf">
             <option value=""></option>
             <option v-for="shelf in shelves" :key="shelf.hold_pickup_shelf_id" :value="shelf.hold_pickup_shelf_id">
                 {{ shelf.shelf_name }}
             </option>
         </select>
+    </div>
+    <div v-else>
+        <p>{{ $__('No available pickup shelves') }}</p>
     </div>
 </template>
 <style scoped>
