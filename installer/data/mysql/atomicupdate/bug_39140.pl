@@ -49,5 +49,51 @@ return {
             say_success( $out, "Added column 'old_reserves.hold_pickup_shelf_id'" );
         }
 
+        if (!column_exists( 'hold_pickup_shelves', 'overflow_shelf' ) ) {
+            $dbh->do(q{
+                ALTER TABLE hold_pickup_shelves
+                ADD COLUMN overflow_shelf TINYINT(1) DEFAULT 0
+            });
+
+            say_success( $out, "Added column 'hold_pickup_shelves.overflow_shelf'" );
+        }
+        if (!column_exists( 'hold_pickup_shelves', 'locked' ) ) {
+            $dbh->do(q{
+                ALTER TABLE hold_pickup_shelves
+                ADD COLUMN locked TINYINT(1) DEFAULT 0
+            });
+
+            say_success( $out, "Added column 'hold_pickup_shelves.locked'" );
+        }
+        if (!column_exists( 'hold_pickup_shelves', 'locked_date' ) ) {
+            $dbh->do(q{
+                ALTER TABLE hold_pickup_shelves
+                ADD COLUMN locked_date DATETIME DEFAULT NULL
+            });
+
+            say_success( $out, "Added column 'hold_pickup_shelves.locked_date'" );
+        }
+        if (!column_exists( 'hold_pickup_shelves', 'biblio_itemtype' ) ) {
+            $dbh->do(q{
+                ALTER TABLE hold_pickup_shelves
+                ADD COLUMN biblio_itemtype VARCHAR(10) DEFAULT NULL
+            });
+
+            say_success( $out, "Added column 'hold_pickup_shelves.biblio_itemtype'" );
+        }
+        if (!column_exists( 'hold_pickup_shelves', 'categorycode' ) ) {
+            $dbh->do(q{
+                ALTER TABLE hold_pickup_shelves
+                ADD COLUMN categorycode VARCHAR(10) DEFAULT NULL
+            });
+
+            $dbh->do(q{
+                ALTER TABLE hold_pickup_shelves
+                ADD FOREIGN KEY (categorycode) REFERENCES categories(categorycode) ON DELETE CASCADE
+            });
+
+            say_success( $out, "Added column 'hold_pickup_shelves.categorycode'" );
+        }
+
     },
 };
