@@ -868,7 +868,7 @@
                                                     [% ELSE %]
                                                         <h4><strong>Hold at</strong> [% Branches.GetName( destbranch ) | html %]</h4>
                                                         [% IF Koha.Preference('HoldPickupShelves') %]
-                                                            <div id="hold-pickup-shelves-view" data-library-id="[% destbranch | html %]" data-biblio-id="[% itembiblionumber | html %]" data-patron-id="[% patron.borrowernumber | html %]"></div>
+                                                            <div id="hold-pickup-shelves-view" data-library-id="[% destbranch | html %]" data-biblio-id="[% itembiblionumber | html %]"></div>
                                                         [% END %]
                                                     [% END %]
 
