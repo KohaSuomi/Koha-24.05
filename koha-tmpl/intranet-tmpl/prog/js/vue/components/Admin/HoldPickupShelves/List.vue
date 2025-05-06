@@ -31,6 +31,11 @@ import { APIClient } from "../../../fetch/api-client.js";
 import KohaTable from "../../KohaTable.vue";
 
 export default {
+    props: {
+        libraries: Array,
+        categories: Array,
+        biblio_level_itemtypes: Array,
+    },
     data() {
         return {
             title: this.$__("Hold pickup shelves"),
@@ -52,10 +57,50 @@ export default {
                         searchable: true,
                     },
                     {
-                        title: __("Max items"),
+                        title: this.$__("Max items"),
                         data: "max_items",
                         searchable: true,
                         orderable: true,
+                    },
+                    {
+                        title: this.$__("Weekday"),
+                        data: "weekday",
+                        searchable: true,
+                        orderable: true,
+                        render: data => {
+                            return data
+                                ? this.$__("%s").format(data)
+                                : this.$__("Any");
+                        },
+                    },
+                    {
+                        title: this.$__("Patron category"),
+                        data: "patron_category.name",
+                        searchable: true,
+                        orderable: true,
+                        render: data => {
+                            return data
+                                ? data
+                                : this.$__("Any");
+                        },
+                    },
+                    {
+                        title: this.$__("Biblio level itemtype"),
+                        data: "biblio_level_itemtype.description",
+                        searchable: true,
+                        orderable: true,
+                        render: data => {
+                            return data
+                                ? data
+                                : this.$__("Any");
+                        },
+                    },
+                    {
+                        title: this.$__("Overflow shelf"),
+                        data: "overflow_shelf",
+                        searchable: true,
+                        orderable: true,
+                        render: data => (data === true ? this.$__("Yes") : this.$__("No")),
                     },
                 ],
                 actions: {
@@ -70,7 +115,7 @@ export default {
                     ],
                 },
                 url: "/api/v1/holds/pickup_shelves",
-                options: {embed: "library"},
+                options: {embed: "library,patron_category,biblio_level_itemtype"},
             },
             initialized: false,
             hold_pickup_shelves_any: 0,

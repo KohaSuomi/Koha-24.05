@@ -52,6 +52,64 @@
                         />
                         <span class="required">{{ $__("Required") }}</span>
                     </li>
+                    <li>
+                        <label for="weekday">
+                            {{ $__("Weekday") }}:
+                        </label>
+                        <select
+                            id="weekday"
+                            v-model="hold_pickup_shelf.weekday"
+                        >
+                            <option
+                                v-for="weekday in weekdays"
+                                :value="weekday.id"
+                                :key="weekday.id"
+                                >{{ weekday.name }}</option
+                            >
+                        </select>
+                    </li>
+                    <li>
+                        <label for="biblio_itemtype">
+                            {{ $__("Biblio level itemtype") }}:
+                        </label>
+                        <select
+                            id="biblio_itemtype"
+                            v-model="hold_pickup_shelf.biblio_itemtype"
+                        >
+                            <option
+                                v-for="itemtype in biblio_level_itemtypes"
+                                :value="itemtype.id"
+                                :key="itemtype.id"
+                                >{{ itemtype.name }}</option
+                            >
+                        </select>
+                    </li>
+                    <li>
+                        <label for="categorycode">
+                            {{ $__("Category") }}:
+                        </label>
+                        <select
+                            id="patron_category_id"
+                            v-model="hold_pickup_shelf.patron_category_id"
+                        >
+                            <option
+                                v-for="category in categories"
+                                :value="category.patron_category_id"
+                                :key="category.patron_category_id"
+                                >{{ category.name }}</option
+                            >
+                        </select>
+                    </li>
+                    <li>
+                        <label for="overflow_shelf">
+                            {{ $__("Overflow shelf") }}:
+                        </label>
+                        <input
+                            id="overflow_shelf"
+                            v-model="hold_pickup_shelf.overflow_shelf"
+                            type="checkbox"
+                        />
+                    </li>
                 </ol>
             </fieldset>
             <fieldset class="action">
@@ -79,6 +137,8 @@ import { APIClient } from "../../../fetch/api-client.js";
 export default {
     props: {
         libraries: Array,
+        categories: Array,
+        biblio_level_itemtypes: Array,
     },
     setup() {
         const { setMessage } = inject("mainStore");
@@ -95,6 +155,15 @@ export default {
                 max_items: 0,
             },
             initialized: false,
+            weekdays: [
+                { id: 'Monday', name: this.$__("Monday") },
+                { id: 'Tuesday', name: this.$__("Tuesday") },
+                { id: 'Wednesday', name: this.$__("Wednesday") },
+                { id: 'Thursday', name: this.$__("Thursday") },
+                { id: 'Friday', name: this.$__("Friday") },
+                { id: 'Saturday', name: this.$__("Saturday") },
+                { id: 'Sunday', name: this.$__("Sunday") },
+            ],
         };
     },
     beforeRouteEnter(to, from, next) {

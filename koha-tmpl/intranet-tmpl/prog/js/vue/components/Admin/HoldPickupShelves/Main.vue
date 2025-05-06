@@ -9,7 +9,7 @@
                 <div class="col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
                     <main>
                         <Dialog></Dialog>
-                        <router-view :libraries="libraries"></router-view>
+                        <router-view :libraries="libraries" :categories="categories" :biblio_level_itemtypes="biblio_level_itemtypes"></router-view>
                     </main>
                 </div>
             </div>
@@ -32,12 +32,21 @@ export default {
     data() {
         return {
             libraries: [],
+            categories: [],
+            biblio_level_itemtypes: [],
             shelf_count: 0,
         }
     },
     async beforeMount() {
-        const client = APIClient.libraries;
-        this.libraries = await client.libraries.getAll();
+        const client = APIClient;
+        const [libraries, categories, biblio_level_itemtypes] = await Promise.all([
+            client.libraries.libraries.getAll(),
+            client.patron.patron_categories.getAll(),
+            client.hold_pickup_shelves.biblio_level_itemtypes.getAll()
+        ]);
+        this.libraries = libraries;
+        this.categories = categories;
+        this.biblio_level_itemtypes = biblio_level_itemtypes;
     },
 };
 </script>
