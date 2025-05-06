@@ -15,6 +15,13 @@ return {
 
         say_success( $out, "Added new system preference 'HoldPickupShelves'");
 
+        $dbh->do(q{
+            INSERT IGNORE INTO systempreferences (variable,value,options,explanation,type) VALUES
+            ('HoldPickupShelvesBiblioLevelItemTypeParameter','','','URL for biblio level item type API fetch', 'FreeText')
+        });
+
+        say_success( $out, "Added new system preference 'HoldPickupShelvesBiblioLevelItemTypeParameter'");
+
         unless ( TableExists('hold_pickup_shelves') ) {
             $dbh->do(q{
                 CREATE TABLE hold_pickup_shelves (
@@ -81,18 +88,26 @@ return {
 
             say_success( $out, "Added column 'hold_pickup_shelves.biblio_itemtype'" );
         }
-        if (!column_exists( 'hold_pickup_shelves', 'categorycode' ) ) {
+        if (!column_exists( 'hold_pickup_shelves', 'patron_category_id' ) ) {
             $dbh->do(q{
                 ALTER TABLE hold_pickup_shelves
-                ADD COLUMN categorycode VARCHAR(10) DEFAULT NULL
+                ADD COLUMN patron_category_id VARCHAR(10) DEFAULT NULL
             });
 
             $dbh->do(q{
                 ALTER TABLE hold_pickup_shelves
-                ADD FOREIGN KEY (categorycode) REFERENCES categories(categorycode) ON DELETE CASCADE
+                ADD FOREIGN KEY (patron_category_id) REFERENCES categories(categorycode) ON DELETE CASCADE
             });
 
-            say_success( $out, "Added column 'hold_pickup_shelves.categorycode'" );
+            say_success( $out, "Added column 'hold_pickup_shelves.patron_category_id'" );
+        }
+        if (!column_exists( 'hold_pickup_shelves', 'weekday' ) ) {
+            $dbh->do(q{
+                ALTER TABLE hold_pickup_shelves
+                ADD COLUMN weekday ENUM ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') DEFAULT NULL
+            });
+
+            say_success( $out, "Added column 'hold_pickup_shelves.weekday'" );
         }
 
     },
