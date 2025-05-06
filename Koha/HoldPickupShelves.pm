@@ -30,6 +30,58 @@ Koha::HoldPickupShelves - Koha HoldPickupShelves Object class
 
 =head1 API
 
+=head2 Public methods
+
+=head3 available_shelves
+Returns the list of shelves for a given library.
+=cut
+sub available_shelves {
+    my ($self, $library_id, $biblio_id, $patron_id) = @_;
+
+    my $primary_shelves = $self->primary_shelves($library_id, $biblio_id, $patron_id);
+    return $primary_shelves if @$primary_shelves;
+
+    my $overflow_shelves = $self->overflow_shelves($library_id, $biblio_id, $patron_id);
+    return $overflow_shelves if @$overflow_shelves;
+
+    return [];
+}
+
+
+=head3 primary_shelves
+Returns the list of primary shelves for a given library.
+=cut
+
+sub primary_shelves {
+    my ($self, $library_id, $biblio_id, $patron_id) = @_;
+    my $shelves = $self->search({library_id => $library_id, overflow_shelf => 0})->unblessed;
+    my $response = [];
+    for my $shelf (@$shelves) {
+        my $shelf_obj = Koha::HoldPickupShelf->new($shelf);
+        if ($shelf_obj->available_shelf($biblio_id, $patron_id)) {
+            push @{$response}, $shelf_obj;
+        }
+    }
+
+    return $response;
+}
+
+=head3 overflow_shelves
+Returns the list of overflow shelves for a given library.
+=cut
+sub overflow_shelves {
+    my ($self, $library_id, $biblio_id, $patron_id) = @_;
+    my $shelves = $self->search({library_id => $library_id, overflow_shelf => 1})->unblessed;
+    my $response = [];
+    for my $shelf (@$shelves) {
+        my $shelf_obj = Koha::HoldPickupShelf->new($shelf);
+        if ($shelf_obj->available_shelf($biblio_id, $patron_id)) {
+            push @{$response}, $shelf_obj;
+        }
+    }
+    return $response;
+}
+
 =head2 Internal methods
 
 =head3 _type

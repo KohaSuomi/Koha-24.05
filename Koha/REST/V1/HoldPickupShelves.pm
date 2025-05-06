@@ -76,16 +76,7 @@ sub available_shelves {
         my $library_id = $c->param('library_id');
         my $biblio_id = $c->param('biblio_id');
         my $patron_id = $c->param('patron_id');
-        my $hold_pickup_shelves = $library_id ? Koha::HoldPickupShelves->search({ library_id => $library_id })->unblessed : Koha::HoldPickupShelves->search->unblessed;
-        my $shelves = [];
-        foreach my $shelf ( @$hold_pickup_shelves ) {
-            my $hold_pickup_shelf = Koha::HoldPickupShelf->new_from_api( $shelf );
-            if ($hold_pickup_shelf->holds_count < $hold_pickup_shelf->max_items && (!defined $biblio_id || !$hold_pickup_shelf->duplicate_record($biblio_id))) {
-                my $patron_has_holds = $patron_id ? $hold_pickup_shelf->patron_has_holds($patron_id) : 0;
-                push @{$shelves}, {shelves => $hold_pickup_shelf, patron_has_holds => $patron_has_holds};
-            }
-        }
-        my $response = [ map { $_->{shelves} } sort { $b->{patron_has_holds} <=> $a->{patron_has_holds} } @$shelves ];
+        my $response = Koha::HoldPickupShelves->available_shelves( $library_id, $biblio_id, $patron_id );
         return $c->render(
             status  => 200,
             openapi => $response

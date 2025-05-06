@@ -104,13 +104,28 @@ Return if the shelf is available for holds
 =cut
 
 sub available_shelf {
-    my ($self, $biblio) = @_;
-    if ($self->holds_count < $self->max_items) {
-        if ($)
-        return 1;
-    } else {
+    my ($self, $biblio_id, $patron_id) = @_;
+    my $patron = Koha::Patrons->find($patron_id);
+    my $patron_category_id = $self->_result->patron_category_id;
+    my $biblio_itemtype = $self->_result->biblio_itemtype;
+    my $biblio = Koha::Biblios->find($biblio_id);
+
+    if ($biblio_id && $self->duplicate_record($biblio_id)) {
         return 0;
     }
+    if ($patron && $patron_category_id && $patron->categorycode ne $patron_category_id) {
+        return 0;
+    }
+
+    if ($biblio_itemtype && $biblio && $biblio->itemtype ne $biblio_itemtype) {
+        return 0;
+    }
+
+    if ($self->holds_count >= $self->max_items) {
+        return 0;
+    }
+
+    return $self->weekday_match;
 }
 
 
@@ -137,16 +152,21 @@ sub duplicate_record {
     return $rs->count();
 }
 
-=head3 patron_has_holds
-
-Checks if a patron has holds on this pickup shelf.
-Returns true if the patron has holds on this pickup shelf.
-
+=head3 weekday_match
+Checks if the shelf is open on the given weekday.
 =cut
-sub patron_has_holds {
-    my ($self, $patron_id) = @_;
-    my $rs = Koha::Holds->search({ hold_pickup_shelf_id => $self->_result->hold_pickup_shelf_id, borrowernumber => $patron_id });
-    return $rs->count();
+sub weekday_match {
+    my ($self) = @_;
+    my $weekday = $self->_result->weekday;
+    my @days = qw(Sunday Monday Tuesday Wednesday Thursday Friday Saturday);
+    my $today = $days[(localtime)[6]];
+    my $open = 1;
+    if ($weekday) {
+        if ($weekday ne $today) {
+            $open = 0;
+        }
+    } 
+    return $open;
 }
 
 =head3 delete
