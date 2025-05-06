@@ -22,6 +22,8 @@
           type: string
           enum:
             - library
+            - patron_category
+            - biblio_level_itemtype
         collectionFormat: csv
     consumes:
       - application/json
@@ -323,6 +325,60 @@
           $ref: "../swagger.yaml#/definitions/error"
       "403":
         description: Not allowed
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "500":
+        description: |
+          Internal server error. Possible `error_code` attribute values:
+
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "503":
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+    x-koha-authorization:
+      permissions:
+        reserveforothers: place_holds
+"/holds/pickup_shelves/biblio_level_itemtypes":
+  get:
+    x-mojo-to: HoldPickupShelves#biblio_level_itemtypes
+    operationId: biblioLevelItemtypes
+    summary: List biblio level item types
+    tags:
+      - hold_pickup_shelves
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/match"
+      - $ref: "../swagger.yaml#/parameters/order_by"
+      - $ref: "../swagger.yaml#/parameters/page"
+      - $ref: "../swagger.yaml#/parameters/per_page"
+      - $ref: "../swagger.yaml#/parameters/q_param"
+      - $ref: "../swagger.yaml#/parameters/q_body"
+      - $ref: "../swagger.yaml#/parameters/request_id_header"
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    responses:
+      "200":
+        description: A list of biblio level item types for hold pickup shelves
+        schema:
+          type: array
+      "400":
+        description: Bad request
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "401":
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "403":
+        description: Not allowed
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      "404":
+        description: Not found
         schema:
           $ref: "../swagger.yaml#/definitions/error"
       "500":

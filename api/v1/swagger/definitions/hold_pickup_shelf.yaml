@@ -14,9 +14,50 @@ properties:
   max_items:
     description: How many items can be placed on this shelf
     type: integer
+  biblio_itemtype:
+    description: Biblio item type string
+    type: 
+      - string
+      - 'null'
+  patron_category_id:
+    description: Patron category identifier
+    type: 
+      - string
+      - 'null'
+  overflow_shelf:
+    description: Overflow shelf boolean
+    type: 
+      - boolean
+      - 'null'
+  locked:
+    description: Locked boolean
+    type: 
+      - boolean
+      - 'null'
+  locked_date:
+    description: Date the shelf was locked
+    format: date-time
+    type: 
+      - string
+      - 'null'
+  weekday:
+    description: Weekday the shelf is open
+    type: 
+      - string
+      - 'null'
   library: 
     description: Library object
     type: object
+  patron_category:
+    description: Patron category object
+    type: 
+      - object
+      - 'null'
+  biblio_level_itemtype:
+    description: Biblio level item type object
+    type: 
+      - object
+      - 'null'
 additionalProperties: false
 required:
   - shelf_name
