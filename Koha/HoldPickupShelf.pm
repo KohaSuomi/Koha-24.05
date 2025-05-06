@@ -43,6 +43,77 @@ sub library {
     return Koha::Library->_new_from_dbic($rs);
 }
 
+=head3 patron_category
+Returns the related category object.
+=cut
+
+sub patron_category {
+    my ($self) = @_;
+    my $rs = $self->_result->patron_category;
+    return unless $rs;
+    return Koha::Patron::Category->_new_from_dbic($rs);
+}
+
+=head3 biblio_level_itemtypes
+Returns the list of item types or authorised values for the biblio level item type parameter
+=cut
+
+sub biblio_level_itemtypes {
+    my ($self) = @_;
+    my $config = C4::Context->preference('HoldPickupShelvesBiblioLevelItemTypeParameter');
+    my $response = [];
+    if ($config eq 'itemtypes') {
+        my $item_types = Koha::ItemTypes->search->unblessed;
+        foreach my $item_type (@$item_types) {
+            $item_type->{name} = $item_type->{description};
+            $item_type->{id} = $item_type->{itemtype};
+            push @$response, $item_type;
+        }
+    } else {
+        my $authorsed_values = Koha::AuthorisedValues->search({ category => $config })->unblessed;
+        foreach my $authorised_value ( @$authorsed_values ) {
+            $authorised_value->{name} = $authorised_value->{lib};
+            $authorised_value->{id} = $authorised_value->{authorised_value};
+            push @{$response}, $authorised_value;
+        }
+    }
+    return $response;  
+}
+
+=head3 biblio_level_itemtype
+Returns the related item type object.
+=cut
+sub biblio_level_itemtype {
+    my ($self) = @_;
+    my $config = C4::Context->preference('HoldPickupShelvesBiblioLevelItemTypeParameter');
+    my $rs = $self->_result->biblio_itemtype;
+    return unless $rs;
+    if ($config eq 'itemtypes') {
+        my $itemtype = Koha::ItemTypes->search({ itemtype => $self->_result->biblio_itemtype })->next;
+        return unless $itemtype;
+        return $itemtype;
+    } else {
+        my $authorised_value = Koha::AuthorisedValues->search({ category => $config, authorised_value => $self->_result->biblio_itemtype})->next;
+        return unless $authorised_value;
+        return $authorised_value;
+    }
+}
+
+=head3 available_shelf
+Return if the shelf is available for holds
+=cut
+
+sub available_shelf {
+    my ($self, $biblio) = @_;
+    if ($self->holds_count < $self->max_items) {
+        if ($)
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+
 =head3 holds_count
 
 Returns the number of holds on this hold pickup shelf.
