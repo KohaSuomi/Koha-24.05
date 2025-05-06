@@ -137,6 +137,18 @@ sub duplicate_record {
     return $rs->count();
 }
 
+=head3 patron_has_holds
+
+Checks if a patron has holds on this pickup shelf.
+Returns true if the patron has holds on this pickup shelf.
+
+=cut
+sub patron_has_holds {
+    my ($self, $patron_id) = @_;
+    my $rs = Koha::Holds->search({ hold_pickup_shelf_id => $self->_result->hold_pickup_shelf_id, borrowernumber => $patron_id });
+    return $rs->count();
+}
+
 =head3 delete
 
 Overridden delete method to prevent system default deletions
@@ -145,7 +157,7 @@ Overridden delete method to prevent system default deletions
 
 sub delete {
     my ($self) = @_;
-    warn Data::Dumper::Dumper($self);
+    
     if ($self->holds_count) {
         # If there are holds on this pickup shelf, we cannot delete it
         Koha::Exceptions::Object::FKConstraint->throw(
