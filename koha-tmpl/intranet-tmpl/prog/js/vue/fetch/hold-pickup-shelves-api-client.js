@@ -47,6 +47,17 @@ export class HoldPickupShelvesAPIClient extends HttpClient {
                 }),
         }
     }
+    get biblio_level_itemtypes() {
+        return {
+            getAll: (query, params) =>
+                this.getAll({
+                    endpoint: "/biblio_level_itemtypes",
+                    query,
+                    params,
+                    headers: {},
+                }),
+        }
+    }
 }
 
 export default HoldPickupShelvesAPIClient;
