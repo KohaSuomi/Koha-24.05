@@ -23,6 +23,11 @@ export class HoldPickupShelvesAPIClient extends HttpClient {
                     endpoint: "/" + id,
                     body: hold_pickup_shelf,
                 }),
+            patch: (id, body) =>
+                this.patch({
+                    endpoint: "/" + id,
+                    body,
+                }),
             get: id =>
                 this.get({
                     endpoint: "/" + id,

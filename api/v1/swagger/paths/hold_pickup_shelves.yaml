@@ -214,6 +214,61 @@
     x-koha-authorization:
       permissions:
         reserveforothers: place_holds
+  patch:
+    x-mojo-to: HoldPickupShelves#update
+    operationId: editHoldPickupShelves
+    tags:
+      - hold_pickup_shelves
+    summary: Edit a hold pickup shelf
+    produces:
+      - application/json
+    parameters:
+      - $ref: "../swagger.yaml#/parameters/hold_pickup_shelf_id_pp"
+      - description: A JSON object containing the fields to edit
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            locked:
+              description: Lock this hold pickup shelf
+              type: boolean
+            locked_date:
+              description: The date this hold pickup shelf was locked
+              type: string
+              format: date-time
+          additionalProperties: false
+    responses:
+      200:
+        description: A hold pickup shelf
+        schema:
+          $ref: "../swagger.yaml#/definitions/hold_pickup_shelf"
+      401:
+        description: Authentication required
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      403:
+        description: Access forbidden
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      404:
+        description: Package not found
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      500:
+        description: |-
+          Internal server error. Possible `error_code` attribute values:
+          * `internal_server_error`
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+      503:
+        description: Under maintenance
+        schema:
+          $ref: "../swagger.yaml#/definitions/error"
+    x-koha-authorization:
+      permissions:
+        reserveforothers: place_holds
   delete:
     x-mojo-to: HoldPickupShelves#delete
     operationId: deleteHoldPickupShelves
