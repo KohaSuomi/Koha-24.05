@@ -38,6 +38,8 @@ Returns the list of shelves for a given library.
 sub available_shelves {
     my ($self, $library_id, $biblio_id, $patron_id) = @_;
 
+    $self->open_locked_shelves($library_id);
+
     my $primary_shelves = $self->primary_shelves($library_id, $biblio_id, $patron_id);
     return $primary_shelves if @$primary_shelves;
 
@@ -54,14 +56,14 @@ Returns the list of primary shelves for a given library.
 
 sub primary_shelves {
     my ($self, $library_id, $biblio_id, $patron_id) = @_;
-    my $shelves = $self->search({library_id => $library_id, overflow_shelf => 0})->unblessed;
+    my $shelves = $self->search({library_id => $library_id, overflow_shelf => 0, locked => 0})->as_list;
     my $response = [];
     for my $shelf (@$shelves) {
-        my $shelf_obj = Koha::HoldPickupShelf->new($shelf);
-        if ($shelf_obj->available_shelf($biblio_id, $patron_id)) {
-            push @{$response}, $shelf_obj;
+        if ($shelf->available_shelf($biblio_id, $patron_id)) {
+            push @{$response}, $shelf;
         }
     }
+    
 
     return $response;
 }
@@ -71,15 +73,27 @@ Returns the list of overflow shelves for a given library.
 =cut
 sub overflow_shelves {
     my ($self, $library_id, $biblio_id, $patron_id) = @_;
-    my $shelves = $self->search({library_id => $library_id, overflow_shelf => 1})->unblessed;
+    my $shelves = $self->search({library_id => $library_id, overflow_shelf => 1, locked => 0})->as_list;
     my $response = [];
     for my $shelf (@$shelves) {
-        my $shelf_obj = Koha::HoldPickupShelf->new($shelf);
-        if ($shelf_obj->available_shelf($biblio_id, $patron_id)) {
-            push @{$response}, $shelf_obj;
+        if ($shelf->available_shelf($biblio_id, $patron_id)) {
+            push @{$response}, $shelf;
         }
     }
     return $response;
+}
+
+=head3 open_locked_shelves
+Opens all locked shelves for a given library.
+This method is used to unlock shelves that are not locked today.
+=cut
+sub open_locked_shelves {
+    my ($self, $library_id) = @_;
+    my $today = DateTime->today->ymd;
+    my $shelves = $self->search({library_id => $library_id, locked => 1, locked_date => { '<' => $today }})->as_list;
+    for my $shelf (@$shelves) {
+        $shelf->update({locked => 0, locked_date => undef});
+    }
 }
 
 =head2 Internal methods
