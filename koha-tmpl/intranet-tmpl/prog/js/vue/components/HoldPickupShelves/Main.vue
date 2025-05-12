@@ -2,6 +2,11 @@
     <div v-if="shelves.length > 0">
         <div class="row">
             <div class="col-md-12"><h4>{{ $__('Selected pickup shelf') }}</h4></div>
+            <div class="col-md-12">
+                <div class="alert alert-warning" v-if="notification">
+                    <i class="fas fa-info-circle"></i> <b>{{ notification }}</b>
+                </div>
+            </div>
             <div class="col-md-6">
                 <div class="d-flex align-items-center">
                     <select id="hold_pickup_shelf_id" class="form-control me-2" v-model="hold_pickup_shelf_id">
@@ -55,10 +60,17 @@ export default {
             shelves: [],
             hold_pickup_shelf: {},
             hold_pickup_shelf_id: null,
+            previous_shelf_id: null,
+            realtimeInterval: null,
+            notification: null
         }
     },
     async beforeMount() {
         this.getShelves();
+        this.startRealtimeCheck();
+    },
+    beforeUnmount() {
+        this.stopRealtimeCheck();
     },
     watch: {
         selectedShelfId() {
@@ -75,6 +87,12 @@ export default {
             if (this.shelves.length > 0) {
                 this.hold_pickup_shelf_id = this.shelves[0].hold_pickup_shelf_id;
                 this.hold_pickup_shelf = this.shelves[0];
+                if (this.previous_shelf_id !== null && this.previous_shelf_id != this.hold_pickup_shelf_id) {
+                    this.notification = this.$__("Pickup shelf changed to %s").format(this.hold_pickup_shelf.shelf_name);
+                }
+                this.previous_shelf_id = this.hold_pickup_shelf_id;
+
+                    
             }
         },
         lockShelf(e) {
@@ -89,6 +107,24 @@ export default {
                     .catch(error => {
                         console.error(error);
                     });
+            }
+        },
+        startRealtimeCheck() {
+            this.realtimeInterval = setInterval(() => {
+                if (!$('#hold-found2').hasClass('in')) {
+                    this.notification = null;
+                    this.stopRealtimeCheck();
+                    return;
+                }
+                if (this.hold_pickup_shelf_id) {
+                    this.notification = null;
+                    this.getShelves();
+                }
+            }, 5000); // Check every 5 seconds
+        },
+        stopRealtimeCheck() {
+            if (this.realtimeInterval) {
+                clearInterval(this.realtimeInterval);
             }
         }
     }
