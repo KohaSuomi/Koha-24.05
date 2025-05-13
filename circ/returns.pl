@@ -839,6 +839,11 @@ foreach ( sort { $a <=> $b } keys %returneditems ) {
         $ri{withdrawn}           = $item->withdrawn;
         $ri{transferreason}      = $item->get_transfer ? $item->get_transfer->reason : '';
 
+        my $hold = Koha::Holds->search({ itemnumber => $item->itemnumber })->next;
+        if ( $hold ) {
+            $ri{hold_pickup_shelf_name} = $hold->hold_pickup_shelf ? $hold->hold_pickup_shelf->shelf_name : '';
+        }
+
         $ri{location} = $item->location;
         my $shelfcode = $ri{'location'};
         $ri{'location'} = $shelflocations->{$shelfcode} if ( defined( $shelfcode ) && defined($shelflocations) && exists( $shelflocations->{$shelfcode} ) );

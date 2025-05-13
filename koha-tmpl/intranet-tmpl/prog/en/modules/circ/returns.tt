@@ -1250,6 +1250,7 @@
                                             <th class="ci-transferlibrary">Transfer to</th>
                                             <th class="ci-transferreason">Transfer reason</th>
                                             <th class="ci-shelvinglocation">Shelving location</th>
+                                            <th class="ci-holdpickup">Pickup shelf</th>
                                             <th class="ci-callnumber">Call number</th>
                                             <th class="ci-dateaccessioned">Date acquired</th>
                                             <th class="ci-recordlevelitemtype">Record-level itemtype</th>
@@ -1322,6 +1323,9 @@
                                             </td>
                                             <td class="ci-shelvinglocation">
                                                 <span class="shelvingloc">[% riloo.location | html %]</span>
+                                            </td>
+                                            <td>
+                                                <span class="pickup-shelf">[% riloo.hold_pickup_shelf_name | html %]</span>
                                             </td>
                                             <td class="ci-callnumber">
                                                 [% riloo.itemcallnumber | html %]
