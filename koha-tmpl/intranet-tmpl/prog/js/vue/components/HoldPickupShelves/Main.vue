@@ -1,7 +1,7 @@
 <template>
     <div v-if="shelves.length > 0">
         <div class="row">
-            <div class="col-md-12"><h4>{{ $__('Selected pickup shelf') }}</h4></div>
+            <div class="col-md-12"><h4>{{ $__('Select pickup shelf') }}</h4></div>
             <div class="col-md-12">
                 <div class="alert alert-warning" v-if="notification">
                     <i class="fas fa-info-circle"></i> <b>{{ notification }}</b>
@@ -73,7 +73,7 @@ export default {
         this.stopRealtimeCheck();
     },
     watch: {
-        selectedShelfId() {
+        hold_pickup_shelf_id() {
             const hiddenInput = document.getElementsByName("hold_pickup_shelf_id")[0];
             if (hiddenInput) {
                 hiddenInput.value = this.hold_pickup_shelf_id;
