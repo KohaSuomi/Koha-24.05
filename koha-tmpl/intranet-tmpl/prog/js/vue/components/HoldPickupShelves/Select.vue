@@ -150,7 +150,8 @@ export default {
         },
         startRealtimeCheck() {
             this.realtimeInterval = setInterval(() => {
-                if (!$('#hold-found2').hasClass('in')) {
+                const holdFound2 = document.getElementById('hold-found2');
+                if (holdFound2 && !holdFound2.classList.contains('in')) {
                     this.notification = null;
                     this.stopRealtimeCheck();
                     return;
