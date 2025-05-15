@@ -595,8 +595,9 @@ if ( $messages->{'ResFound'} ) {
     my $branchCheck = ( $userenv_branch eq $reserve->{branchcode} );
     my $holdPickupShelfLibraryCheck = Koha::HoldPickupShelves->search({library_id => $reserve->{branchcode}})->next;
     if ( $reserve->{'ResFound'} eq "Waiting" ) {
-        $template->param(
+                $template->param(
             waiting      => $branchCheck ? 1 : undef,
+            hold_pickup_shelf_id => $reserve->{'hold_pickup_shelf_id'},
         );
     } elsif ( C4::Context->preference('HoldsAutoFill') && !$holdPickupShelfLibraryCheck ) {
         my $item = Koha::Items->find( $itemnumber );

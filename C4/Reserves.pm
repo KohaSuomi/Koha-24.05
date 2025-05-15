@@ -1731,7 +1731,8 @@ sub _Findgroupreserve {
                reserves.reserve_id          AS reserve_id,
                reserves.itemtype            AS itemtype,
                reserves.non_priority        AS non_priority,
-               reserves.item_group_id           AS item_group_id
+               reserves.item_group_id           AS item_group_id,
+               reserves.hold_pickup_shelf_id AS hold_pickup_shelf_id
         FROM reserves
         JOIN biblioitems USING (biblionumber)
         JOIN hold_fill_targets USING (reserve_id)
@@ -1766,7 +1767,8 @@ sub _Findgroupreserve {
                reserves.reserve_id                 AS reserve_id,
                reserves.itemtype                   AS itemtype,
                reserves.non_priority               AS non_priority,
-               reserves.item_group_id              AS item_group_id
+               reserves.item_group_id              AS item_group_id,
+               reserves.hold_pickup_shelf_id       AS hold_pickup_shelf_id
         FROM reserves
         WHERE reserves.biblionumber = ?
           AND (reserves.itemnumber IS NULL OR reserves.itemnumber = ?)

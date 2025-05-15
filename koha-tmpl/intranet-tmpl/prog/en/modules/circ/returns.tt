@@ -673,6 +673,9 @@
                                                         <h4><strong>Transfer to:</strong> [% Branches.GetName( destbranch ) | html %]</h4>
                                                     [% ELSE %]
                                                         <h4><strong>Hold at</strong> [% Branches.GetName( destbranch ) | html %]</h4>
+                                                        [% IF Koha.Preference('HoldPickupShelves') %]
+                                                            <div id="hold-pickup-shelves-view" data-shelf-id="[% hold_pickup_shelf_id %]"></div>
+                                                        [% END %]
                                                     [% END %]
 
                                                     [% FOREACH inputloo IN inputloop %]
