@@ -129,6 +129,15 @@ sub add {
 
     return try {
         my $hold_pickup_shelf = Koha::HoldPickupShelf->new_from_api( $c->req->json );
+        if ( $hold_pickup_shelf->duplicate_shelf ) {
+            return $c->render(
+                status  => 409,
+                openapi => {
+                    error      => 'The shelf already exists',
+                    error_code => 'duplicate_shelf',
+                }
+            );
+        }
         $hold_pickup_shelf->store;
         $c->res->headers->location( $c->req->url->to_string . '/' . $hold_pickup_shelf->hold_pickup_shelf_id );
         return $c->render(
@@ -151,6 +160,16 @@ sub update {
 
     return $c->render_resource_not_found("Hold pickup shelf")
         unless $hold_pickup_shelf;
+    
+    if ( $hold_pickup_shelf->duplicate_shelf ) {
+        return $c->render(
+            status  => 409,
+            openapi => {
+                error      => 'The shelf already exists',
+                error_code => 'duplicate_shelf',
+            }
+        );
+    }
 
     return try {
         $hold_pickup_shelf->set_from_api( $c->req->json )->store;
@@ -186,7 +205,6 @@ sub delete {
                 }
             );
         }
-        warn Data::Dumper::Dumper($_);
         $c->unhandled_exception($_);
     };
 }

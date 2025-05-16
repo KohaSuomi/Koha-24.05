@@ -110,5 +110,27 @@ return {
             say_success( $out, "Added column 'hold_pickup_shelves.weekday'" );
         }
 
+        if (!unique_key_exists('hold_pickup_shelves','hold_pickup_shelves_idx')) {
+            # Remove the old index
+            $dbh->do(q{
+                ALTER TABLE hold_pickup_shelves
+                DROP FOREIGN KEY hold_pickup_shelves_ibfk_1
+            });
+            $dbh->do(q{
+                ALTER TABLE hold_pickup_shelves
+                DROP INDEX library_id
+            });
+            $dbh->do(q{
+                ALTER TABLE hold_pickup_shelves
+                ADD FOREIGN KEY `hold_pickup_shelves_ibfk_1` (library_id) REFERENCES branches(branchcode) ON DELETE CASCADE
+            });
+            # Add the new index
+            $dbh->do(q{
+                ALTER TABLE hold_pickup_shelves
+                ADD UNIQUE KEY `hold_pickup_shelves_uniq_idx` (library_id, shelf_name, biblio_itemtype, patron_category_id, weekday)
+            });
+            say_success( $out, "Added unique index to 'hold_pickup_shelves'" );
+        }
+
     },
 };

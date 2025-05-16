@@ -128,6 +128,22 @@ sub available_shelf {
     return $self->weekday_match;
 }
 
+=head3 duplicate_shelf
+Checks if shelf already has a record in the database.
+=cut
+sub duplicate_shelf {
+    my ($self) = @_;
+
+    my $rs = Koha::HoldPickupShelves->search({ 
+        library_id => $self->_result->library_id,
+        shelf_name => $self->_result->shelf_name,
+        weekday => $self->_result->weekday,
+        biblio_itemtype => $self->_result->biblio_itemtype,
+        patron_category_id => $self->_result->patron_category_id,
+    });
+    return $rs->count();
+}
+
 
 =head3 holds_count
 
