@@ -110,7 +110,7 @@ return {
             say_success( $out, "Added column 'hold_pickup_shelves.weekday'" );
         }
 
-        if (!unique_key_exists('hold_pickup_shelves','hold_pickup_shelves_idx')) {
+        if (!unique_key_exists('hold_pickup_shelves','hold_pickup_shelves_uniq_idx')) {
             # Remove the old index
             $dbh->do(q{
                 ALTER TABLE hold_pickup_shelves
