@@ -140,8 +140,9 @@ sub duplicate_shelf {
         weekday => $self->_result->weekday,
         biblio_itemtype => $self->_result->biblio_itemtype,
         patron_category_id => $self->_result->patron_category_id,
-    });
-    return $rs->count();
+    })->next;
+    return $rs->hold_pickup_shelf_id if $rs;
+    return 0;
 }
 
 
@@ -183,6 +184,18 @@ sub weekday_match {
         }
     } 
     return $open;
+}
+
+=head3 lock_full_shelf
+Locks the shelf if it is full.
+=cut
+sub lock_full_shelf {
+    my ($self) = @_;
+    my $shelf = Koha::HoldPickupShelves->find($self->_result->hold_pickup_shelf_id);
+    if ($shelf->holds_count >= $shelf->max_items) {
+        my $today = DateTime->today->ymd;
+        $shelf->update({ locked => 1, locked_date => $today });
+    }
 }
 
 =head3 delete

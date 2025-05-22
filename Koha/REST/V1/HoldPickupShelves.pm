@@ -161,7 +161,7 @@ sub update {
     return $c->render_resource_not_found("Hold pickup shelf")
         unless $hold_pickup_shelf;
     
-    if ( $hold_pickup_shelf->duplicate_shelf ) {
+    if ( $hold_pickup_shelf->duplicate_shelf != $hold_pickup_shelf->hold_pickup_shelf_id ) {
         return $c->render(
             status  => 409,
             openapi => {
