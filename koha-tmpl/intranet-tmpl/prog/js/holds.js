@@ -664,7 +664,7 @@ async function load_holds_queue() {
                     } else if (data.status == 'P') {
                         return __("Item being processed at <strong>%s</strong>").format(libraryname);
                     } else if (data.status == 'W') {
-                        const pickup_shelf = data.hold_pickup_shelf ? 'on pickup shelf '+data.hold_pickup_shelf.shelf_name : '';
+                        const pickup_shelf = data.hold_pickup_shelf ? 'on pickup shelf <strong>'+data.hold_pickup_shelf.shelf_name+'</strong>' : '';
                         return __("Item waiting at <strong>%s</strong> %s since %s").format(libraryname, pickup_shelf, $date(data.waiting_date));
                     } else {
                         return branchSelect;
