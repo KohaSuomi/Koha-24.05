@@ -4789,6 +4789,9 @@ sub _validate_floatrules {
 
     }
 
+    #Prevent spamming undef warnings to logs
+    no warnings 'uninitialized';
+
     if( !$evalCondition){
         return "nofloatrule";
     }
