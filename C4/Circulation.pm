@@ -2353,7 +2353,7 @@ sub AddReturn {
     if ($transfer) {
         $validTransfer = 0;
         # cancel transfer if item can float but it wasn't checked in homebranch
-        if ( C4::Context->preference('CancelTransitWhenItemFloats') && $validate_float && $branch ne $item->homebranch )
+        if ( C4::Context->preference('CancelTransitWhenItemFloats') && (($validate_floatrules && $validate_floatrules eq "float") || $validate_float) && $branch ne $item->homebranch )
         {
             $transfer->cancel( { reason => 'ItemArrivedToFloatBranch', force => 1 } );
         } elsif ( $transfer->in_transit ) {
