@@ -565,7 +565,7 @@ sub GetBudgetHierarchy {
         # Get all the budgets totals in as few queries as possible
         my $hr_budget_spent = $dbh->selectall_hashref(q|
             SELECT aqorders.budget_id, aqbudgets.budget_parent_id,
-                SUM( | . C4::Acquisition::get_rounding_sql(qq|COALESCE($unitprice_field, $ecost_field)|) . q| * quantity ) AS budget_spent
+                SUM( | . C4::Acquisition::get_rounding_sql(qq|COALESCE($unitprice_field, $ecost_field)|) . q| * quantityreceived ) AS budget_spent
             FROM aqorders JOIN aqbudgets USING (budget_id)
             WHERE quantityreceived > 0 AND datecancellationprinted IS NULL
             GROUP BY budget_id, budget_parent_id
