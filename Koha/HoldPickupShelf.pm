@@ -117,7 +117,7 @@ sub available_shelf {
         return 0;
     }
 
-    if ($biblio_itemtype && $biblio && $biblio->itemtype ne $biblio_itemtype) {
+    if ($biblio_itemtype && $biblio && defined $biblio->itemtype && $biblio->itemtype ne $biblio_itemtype) {
         return 0;
     }
 
