@@ -50,7 +50,7 @@ return {
             $dbh->do(q{
                 ALTER TABLE old_reserves
                 ADD COLUMN hold_pickup_shelf_id INT,
-                ADD FOREIGN KEY (hold_pickup_shelf_id) REFERENCES hold_pickup_shelves(hold_pickup_shelf_id)
+                ADD FOREIGN KEY (hold_pickup_shelf_id) REFERENCES hold_pickup_shelves(hold_pickup_shelf_id) ON DELETE SET NULL
             });
 
             say_success( $out, "Added column 'old_reserves.hold_pickup_shelf_id'" );
@@ -130,6 +130,15 @@ return {
                 ADD UNIQUE KEY `hold_pickup_shelves_uniq_idx` (library_id, shelf_name, biblio_itemtype, patron_category_id, weekday)
             });
             say_success( $out, "Added unique index to 'hold_pickup_shelves'" );
+        }
+
+        if (!column_exists( 'hold_pickup_shelves', 'priority' ) ) {
+            $dbh->do(q{
+                ALTER TABLE hold_pickup_shelves
+                ADD COLUMN priority INT DEFAULT 0
+            });
+
+            say_success( $out, "Added column 'hold_pickup_shelves.priority'" );
         }
 
     },
