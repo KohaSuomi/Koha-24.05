@@ -113,6 +113,16 @@
                             type="checkbox"
                         />
                     </li>
+                    <li>
+                        <label for="locked">
+                            {{ $__("Lock shelf") }}:
+                        </label>
+                        <input
+                            id="locked"
+                            v-model="hold_pickup_shelf.locked"
+                            type="checkbox"
+                        />
+                    </li>
                 </ol>
             </fieldset>
             <fieldset class="action">

@@ -47,6 +47,21 @@ export default {
                         searchable: true,
                     },
                     {
+                        title: this.$__("Priority"),
+                        data: "priority",
+                        searchable: true,
+                        orderable: true,
+                        render: (data, type, row) => {
+                            return `
+                                <div style="display:flex;align-items:center;gap:2px;">
+                                    <button type="button" class="priority-arrow-down" data-id="${row.hold_pickup_shelf_id}" data-priority="${data}" title="${this.$__('Decrease priority')}" style="border:none;background:none;padding:0 2px;font-size:16px;">&#8595;</button>
+                                    <span style="min-width:30px;display:inline-block;text-align:center;">${data !== null ? data : ''}</span>
+                                    <button type="button" class="priority-arrow-up" data-id="${row.hold_pickup_shelf_id}" data-priority="${data}" title="${this.$__('Increase priority')}" style="border:none;background:none;padding:0 2px;font-size:16px;">&#8593;</button>
+                                </div>
+                            `;
+                        },
+                    },
+                    {
                         title: this.$__("Library name"),
                         data: "library.name",
                         searchable: true,
@@ -102,6 +117,13 @@ export default {
                         orderable: true,
                         render: data => (data === true ? this.$__("Yes") : this.$__("No")),
                     },
+                    {
+                        title: this.$__("Locked"),
+                        data: "locked",
+                        searchable: true,
+                        orderable: true,
+                        render: data => (data === true ? this.$__("Yes") : this.$__("No")),
+                    }
                 ],
                 actions: {
                     "-1": [
@@ -115,7 +137,8 @@ export default {
                     ],
                 },
                 url: "/api/v1/holds/pickup_shelves",
-                options: {embed: "library,patron_category,biblio_level_itemtype"},
+                options: {embed: "library,patron_category,biblio_level_itemtype", 
+                          order: [[1, "asc"]]},
             },
             initialized: false,
             hold_pickup_shelves_any: 0,
@@ -135,6 +158,26 @@ export default {
         next(vm => {
             vm.anyHoldPickupShelves().then(() => (vm.initialized = true));
         });
+    },
+    watch: {
+        initialized(newVal) {
+            if (newVal) {
+                this.$nextTick(() => {
+                    const table = this.$el.querySelector("#hold_pickup_shelves_list .dataTable");
+                    if (table) {
+                        table.addEventListener("click", (event) => {
+                            if (event.target && event.target.classList.contains("priority-arrow-down")) {
+                                const priority = parseInt(event.target.getAttribute("data-priority"));
+                                this.changePriority(event, priority + 1);
+                            } else if (event.target && event.target.classList.contains("priority-arrow-up")) {
+                                const priority = parseInt(event.target.getAttribute("data-priority"));
+                                this.changePriority(event, priority - 1);
+                            }
+                        });
+                    }
+                });
+            }
+        }
     },
     methods: {
         async anyHoldPickupShelves() {
@@ -179,6 +222,24 @@ export default {
                         },
                         error => {}
                     );
+                }
+            );
+        },
+        changePriority: function (event, priority) {
+            const input = event.target;
+            const hold_pickup_shelf_id = input.getAttribute("data-id");
+            if (isNaN(priority) || priority < 1) {
+                this.setWarning(this.$__("Priority must be a positive integer"));
+                return;
+            }
+            const client = APIClient.hold_pickup_shelves;
+            client.hold_pickup_shelves.patch(hold_pickup_shelf_id, {priority: priority}).then(
+                success => {
+                    this.setMessage(this.$__("Priority updated successfully"));
+                    this.$refs.table.redraw("/api/v1/holds/pickup_shelves");
+                },
+                error => {
+                    this.setError(this.$__("Failed to update priority"));
                 }
             );
         },

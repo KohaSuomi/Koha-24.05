@@ -252,6 +252,9 @@
               description: The date this hold pickup shelf was locked
               type: string
               format: date-time
+            priority:
+              description: The priority of this hold pickup shelf
+              type: integer
           additionalProperties: false
     responses:
       200:

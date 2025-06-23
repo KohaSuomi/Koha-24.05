@@ -5,6 +5,9 @@ properties:
     type: integer
     description: Internally assigned record source identifier
     readOnly: true
+  priority:
+    description: Priority of the shelf
+    type: integer
   shelf_name:
     description: Shelf name
     type: string

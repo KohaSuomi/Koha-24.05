@@ -145,6 +145,43 @@ sub duplicate_shelf {
     return 0;
 }
 
+=head3 calculate_priority
+Returns the priority of the shelf.
+=cut
+
+sub calculate_priority {
+    my ($self, $priority) = @_;
+    if (!defined $priority) {
+        # If no priority is given, we calculate the next available priority
+        # by checking the existing shelves and finding the next available priority
+        $priority = $self->next_priority;
+    } else {
+        my $current_priority = $self->_result->priority;
+        my $shelf_with_current_priority = Koha::HoldPickupShelves->search({
+            priority => $priority,
+            hold_pickup_shelf_id => { '!=' => $self->_result->hold_pickup_shelf_id }
+        })->next;
+        
+        if ($shelf_with_current_priority) {
+            $shelf_with_current_priority->update({
+                priority => $current_priority,
+            });
+            
+        }
+    }
+    $self->_result->priority($priority);
+    return $self->_result->priority;     
+}
+
+sub next_priority {
+    my ($self) = @_;
+    my $shelves_sorted = Koha::HoldPickupShelves->search(
+        {},
+        { order_by => { -asc => 'priority' } }
+    )->last;
+
+    return $shelves_sorted ? $shelves_sorted->priority + 1 : 1;
+}
 
 =head3 holds_count
 

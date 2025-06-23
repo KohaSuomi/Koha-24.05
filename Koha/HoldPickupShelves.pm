@@ -56,7 +56,10 @@ Returns the list of primary shelves for a given library.
 
 sub primary_shelves {
     my ($self, $library_id, $biblio_id, $patron_id) = @_;
-    my $shelves = $self->search({library_id => $library_id, overflow_shelf => 0, locked => 0})->as_list;
+    my $shelves = $self->search(
+        { library_id => $library_id, overflow_shelf => 0, locked => 0 },
+        { order_by => { -asc => 'priority' } }
+    )->as_list;
     my $response = [];
     for my $shelf (@$shelves) {
         if ($shelf->available_shelf($biblio_id, $patron_id)) {
@@ -73,7 +76,10 @@ Returns the list of overflow shelves for a given library.
 =cut
 sub overflow_shelves {
     my ($self, $library_id, $biblio_id, $patron_id) = @_;
-    my $shelves = $self->search({library_id => $library_id, overflow_shelf => 1, locked => 0})->as_list;
+    my $shelves = $self->search(
+        { library_id => $library_id, overflow_shelf => 1, locked => 0 },
+        { order_by => { -asc => 'priority' } }
+    )->as_list;
     my $response = [];
     for my $shelf (@$shelves) {
         if ($shelf->available_shelf($biblio_id, $patron_id)) {

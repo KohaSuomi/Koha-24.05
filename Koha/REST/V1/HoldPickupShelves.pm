@@ -138,6 +138,7 @@ sub add {
                 }
             );
         }
+        $hold_pickup_shelf->calculate_priority();
         $hold_pickup_shelf->store;
         $c->res->headers->location( $c->req->url->to_string . '/' . $hold_pickup_shelf->hold_pickup_shelf_id );
         return $c->render(
@@ -172,7 +173,13 @@ sub update {
     }
 
     return try {
-        $hold_pickup_shelf->set_from_api( $c->req->json )->store;
+        # Update the hold pickup shelf with the new data from the API
+        my $body = $c->req->json;
+        # If the body contains priority, we need to set it
+        if ( exists $body->{priority} ) {
+            $hold_pickup_shelf->calculate_priority( $body->{priority} );
+        }
+        $hold_pickup_shelf->set_from_api( $body )->store;
         $hold_pickup_shelf->discard_changes;
         return $c->render( status => 200, openapi => $c->objects->to_api($hold_pickup_shelf) );
     } catch {
