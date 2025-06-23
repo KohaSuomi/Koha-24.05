@@ -87,6 +87,7 @@ export default {
             hold_pickup_shelf: {},
             hold_pickup_shelf_id: null,
             previous_shelf_id: null,
+            selected_shelf: null,
             realtimeInterval: null,
             notification: null,
             loading: true,
@@ -94,7 +95,7 @@ export default {
         }
     },
     async mounted() {
-        this.getShelves();
+        this.getShelves(true);
         this.startRealtimeCheck();
     },
     beforeUnmount() {
@@ -109,20 +110,30 @@ export default {
         }
     },
     methods: {
-        async getShelves() {
+        async getShelves(firstLoad) {
             try {
                 const client = APIClient.hold_pickup_shelves;
                 this.shelves = await client.available.getAll({},{biblio_id: this.biblio_id, library_id: this.library_id, patron_id: this.patron_id});
                 if (this.shelves.length > 0) {
-                    this.hold_pickup_shelf_id = this.shelves[0].hold_pickup_shelf_id;
-                    this.hold_pickup_shelf = this.shelves[0];
-                    if (this.previous_shelf_id !== null && this.previous_shelf_id != this.hold_pickup_shelf_id) {
+                    let showNotification = false;
+                    const found = this.shelves.find(shelf => shelf.hold_pickup_shelf_id === this.hold_pickup_shelf_id);
+                    if(!found) {
+                        this.hold_pickup_shelf_id = null;
+                        this.hold_pickup_shelf = {};
+                        showNotification = true;
+
+                    }
+                    if(this.hold_pickup_shelf_id === null) {
+                        this.hold_pickup_shelf_id = this.shelves[0].hold_pickup_shelf_id;
+                        this.hold_pickup_shelf = this.shelves[0];
+                    }
+                    
+                    if (showNotification && !firstLoad) {
                         this.notification = this.$__("Pickup shelf changed to %s").format(this.hold_pickup_shelf.shelf_name);
                         setTimeout(() => {
                             this.notification = null;
                         }, 15000);
                     }
-                    this.previous_shelf_id = this.hold_pickup_shelf_id;
                 }
                 this.loading = false;
             } catch (error) {
@@ -157,7 +168,7 @@ export default {
                     return;
                 }
                 if (this.hold_pickup_shelf_id) {
-                    this.getShelves();
+                    this.getShelves(false);
                 }
             }, 5000); // Check every 5 seconds
         },
