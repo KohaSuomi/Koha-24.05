@@ -222,6 +222,8 @@ sub writeoff_all {
             );
         }
     }
+    
+    $patron->update_lastseen('modify_charges');
 
     print $input->redirect("/cgi-bin/koha/members/boraccount.pl?borrowernumber=$borrowernumber");
     return;
@@ -264,6 +266,8 @@ sub apply_credits {
     my $cgi    = $args->{cgi};
 
     $patron->account->reconcile_balance();
+
+    $patron->update_lastseen('modify_charges');
 
     print $cgi->redirect("/cgi-bin/koha/members/pay.pl?borrowernumber=" . $patron->borrowernumber );
     return;

@@ -98,6 +98,8 @@ if ( $op eq 'cud-add' ) {
             cash_register => $cash_register_id
         }
     );
+    
+    $patron->update_lastseen('add_charges');
 
     my @additional_fields;
     my $accountline_fields = Koha::AdditionalFields->search({ tablename => 'accountlines:credit' });

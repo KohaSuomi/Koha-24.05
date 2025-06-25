@@ -160,6 +160,8 @@ if ( $op eq 'cud-add' ) {
                     issue_id    => $issue_id
                 }
             );
+            
+            $patron->update_lastseen('add_charges');
 
             my @additional_fields;
             my $accountline_fields = Koha::AdditionalFields->search({ tablename => 'accountlines:debit' });
