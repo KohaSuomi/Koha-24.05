@@ -93,28 +93,11 @@ sub biblio_level_itemtypes {
     my $c = shift->openapi->valid_input or return;
 
     return try {
-        my $config = C4::Context->preference('HoldPickupShelvesBiblioLevelItemTypeParameter');
-        if ($config eq 'itemtypes') {
-            my $item_types = Koha::ItemTypes->search->unblessed;
-            my $response = [];
-            foreach my $item_type ( @$item_types ) {
-                push @{$response}, { id => $item_type->{itemtype}, name => $item_type->{description} };
-            }
-            return $c->render(
-                status  => 200,
-                openapi => $response
-            );
-        } else {
-            my $authorsed_values = Koha::AuthorisedValues->search({ category => $config })->unblessed;
-            my $response = [];
-            foreach my $authorised_value ( @$authorsed_values ) {
-                push @{$response}, { id => $authorised_value->{authorised_value}, name => $authorised_value->{lib} };
-            }
-            return $c->render(
-                status  => 200,
-                openapi => $response
-            );
-        }
+        my $response = Koha::HoldPickupShelves->biblio_level_itemtypes;
+        return $c->render(
+            status  => 200,
+            openapi => $response
+        );
     } catch {
         $c->unhandled_exception($_);
     };
