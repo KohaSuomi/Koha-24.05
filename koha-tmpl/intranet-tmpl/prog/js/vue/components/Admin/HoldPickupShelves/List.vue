@@ -101,7 +101,7 @@ export default {
                     },
                     {
                         title: this.$__("Biblio level itemtype"),
-                        data: "biblio_level_itemtype.description",
+                        data: "biblio_itemtype",
                         searchable: true,
                         orderable: true,
                         render: data => {
@@ -137,7 +137,7 @@ export default {
                     ],
                 },
                 url: "/api/v1/holds/pickup_shelves",
-                options: {embed: "library,patron_category,biblio_level_itemtype", 
+                options: {embed: "library,patron_category", 
                           order: [[1, "asc"]]},
             },
             initialized: false,

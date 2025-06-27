@@ -54,48 +54,22 @@ sub patron_category {
     return Koha::Patron::Category->_new_from_dbic($rs);
 }
 
-=head3 biblio_level_itemtypes
-Returns the list of item types or authorised values for the biblio level item type parameter
-=cut
-
-sub biblio_level_itemtypes {
-    my ($self) = @_;
-    my $config = C4::Context->preference('HoldPickupShelvesBiblioLevelItemTypeParameter');
-    my $response = [];
-    if ($config eq 'itemtypes') {
-        my $item_types = Koha::ItemTypes->search->unblessed;
-        foreach my $item_type (@$item_types) {
-            $item_type->{name} = $item_type->{description};
-            $item_type->{id} = $item_type->{itemtype};
-            push @$response, $item_type;
-        }
-    } else {
-        my $authorsed_values = Koha::AuthorisedValues->search({ category => $config })->unblessed;
-        foreach my $authorised_value ( @$authorsed_values ) {
-            $authorised_value->{name} = $authorised_value->{lib};
-            $authorised_value->{id} = $authorised_value->{authorised_value};
-            push @{$response}, $authorised_value;
-        }
-    }
-    return $response;  
-}
-
 =head3 biblio_level_itemtype
 Returns the related item type object.
 =cut
 sub biblio_level_itemtype {
     my ($self) = @_;
     my $config = C4::Context->preference('HoldPickupShelvesBiblioLevelItemTypeParameter');
-    my $rs = $self->_result->biblio_itemtype;
-    return unless $rs;
+    my $biblio_itemtype = $self->_result->biblio_itemtype;
+    return '' unless $biblio_itemtype;
     if ($config eq 'itemtypes') {
-        my $itemtype = Koha::ItemTypes->search({ itemtype => $self->_result->biblio_itemtype })->next;
-        return unless $itemtype;
-        return $itemtype;
+        my $itemtype = Koha::ItemTypes->search({ itemtype => $biblio_itemtype })->next;
+        return '' unless $itemtype;
+        return $itemtype->description;
     } else {
-        my $authorised_value = Koha::AuthorisedValues->search({ category => $config, authorised_value => $self->_result->biblio_itemtype})->next;
-        return unless $authorised_value;
-        return $authorised_value;
+        my $authorised_value = Koha::AuthorisedValues->search({ category => $config, authorised_value => $biblio_itemtype})->next;
+        return '' unless $authorised_value;
+        return $authorised_value->lib;
     }
 }
 

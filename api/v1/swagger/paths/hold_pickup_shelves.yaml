@@ -23,7 +23,6 @@
           enum:
             - library
             - patron_category
-            - biblio_level_itemtype
         collectionFormat: csv
     consumes:
       - application/json

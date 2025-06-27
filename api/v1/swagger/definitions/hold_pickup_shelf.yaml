@@ -56,11 +56,6 @@ properties:
     type: 
       - object
       - 'null'
-  biblio_level_itemtype:
-    description: Biblio level item type object
-    type: 
-      - object
-      - 'null'
 additionalProperties: false
 required:
   - shelf_name
