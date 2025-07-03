@@ -511,7 +511,7 @@ async function load_holds_queue() {
                 method: "GET",
                 url: "/api/v1/holds/?biblio_id="+biblionumber,
                 headers: { "x-koha-embed": "hold_pickup_shelf" },
-                data: {_page: info.page+1, _per_page: info.length, _order_by: 'priority', _match: 'exact'},
+                data: {_page: info.page+1, _per_page: info.length, _order_by: 'me.priority', _match: 'exact'},
                 success: function(data, textStatus, request){
                     totalHolds = request.getResponseHeader('X-Total-Count');
                     totalHoldsSelect = parseInt(totalHolds)+1;
