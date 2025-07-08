@@ -1865,6 +1865,7 @@ sub check_cookie_auth {
 
         ###########KD-4564
         $timeout = C4::AuthExtra::get_timeout($userid,$timeout);
+        C4::Context->interface( $session->param('interface') );
 
         if ( !$lasttime || ( $lasttime < time() - $timeout ) ) {
             # time out
@@ -1896,7 +1897,7 @@ sub check_cookie_auth {
             my $flags = defined($flagsrequired) ? haspermission( $userid, $flagsrequired ) : 1;
             if ($flags) {
                 C4::Context->_new_userenv($sessionID);
-                if ( !C4::Context->interface ) {
+                if ( !C4::Context->interface || C4::Context->interface ne $session->param('interface') ) {
                     # No need to override the interface, most often set by get_template_and_user
                     C4::Context->interface( $session->param('interface') );
                 }
