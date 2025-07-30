@@ -329,11 +329,12 @@ sub safe_to_delete {
       and defined C4::Context->userenv->{number}
       and !Koha::Patrons->find( C4::Context->userenv->{number} )->can_edit_items_from( $self->homebranch );
 
-     my @holds = Koha::Holds->search({ itemnumber => $self->itemnumber });
-    if (@holds) {
-        $error //= $error eq "item_has_holds" ? "Cannot delete item(s) with active holds." : "item_has_holds";
-    }
-    # check it doesn't have a waiting reserve
+    # Tarkistetaan, onko niteellä varauksia
+    
+    $error //= "item_has_holds"
+      if $self->holds->count; 
+
+    # Tarkistetaan, ettei niteellä ole odottavaa varausta
     $error //= "book_reserved"
       if $self->holds->filter_by_found->count;
 
@@ -347,7 +348,8 @@ sub safe_to_delete {
               itemnumber => undef,
           }
         )->count;
-    if ( $error ) {
+
+    if ($error) {
         return Koha::Result::Boolean->new(0)->add_message({ message => $error });
     }
 
@@ -2256,7 +2258,7 @@ sub can_be_recalled {
     my $rule = Koha::CirculationRules->get_effective_rules({
         branchcode => $branchcode,
         categorycode => $patron ? $patron->categorycode : undef,
-        itemtype => $self->effective_itemtype,
+        itemtype     => $self->effective_itemtype,
         rules => [
             'recalls_allowed',
             'recalls_per_record',
