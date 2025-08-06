@@ -85,6 +85,7 @@
 [% IF ( linked_analytics ) %]<div class="dialog alert"><strong>Cannot delete</strong>: item has linked <a href="/cgi-bin/koha/catalogue/detail.pl?biblionumber=[% biblio.biblionumber | uri %]&amp;analyze=1">analytics.</a>.</div>[% END %]
 [% IF last_item_for_hold %]<div class="dialog alert"><strong>Cannot delete</strong>: Last item for bibliographic record with biblio-level hold on it.</div>[% END %]
 [% IF item_not_found %]<div class="dialog alert"><strong>Cannot delete</strong>: Item not found.</div>[% END %]
+[% IF item_has_holds %]<div class="dialog alert"><strong>Cannot delete</strong>: Item has holds.</div>[% END %]
 
 <div id="cataloguing_additem_itemlist">
     [% IF items %]

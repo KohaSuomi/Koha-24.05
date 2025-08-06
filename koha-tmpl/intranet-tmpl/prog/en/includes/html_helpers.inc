@@ -302,6 +302,7 @@
                                     [% CASE "book_reserved" %][% SET cannot_delete_reason = t("Item has a waiting hold") %]
                                     [% CASE "linked_analytics" %][% SET cannot_delete_reason = t("Item has linked analytics") %]
                                     [% CASE "last_item_for_hold" %][% SET cannot_delete_reason = t("Last item for bibliographic record with biblio-level hold on it") %]
+                                    [% CASE "item_has_holds" %][% SET cannot_delete_reason = t("Item has holds") %]
                                     [% CASE %][% SET cannot_delete_reason = t("Unknown reason") _ '(' _ m.message _ ')' %]
                                     [% END %]
                                 [% END %]

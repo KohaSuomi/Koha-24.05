@@ -844,7 +844,7 @@ subtest 'request_transfer' => sub {
 };
 
 subtest 'deletion' => sub {
-    plan tests => 15;
+    plan tests => 17;
 
     $schema->storage->txn_begin;
 
@@ -917,6 +917,27 @@ subtest 'deletion' => sub {
         'not_same_branch',
         'IndependentBranches prevents deletion at another branch',
     );
+
+    # item_has_holds
+    my $item_level_hold = $builder->build_object({
+        class => 'Koha::Holds',
+        value => {
+            biblionumber => $item->biblionumber,
+            itemnumber   => $item->itemnumber,
+            found        => undef,
+        }
+    });
+
+    $item->discard_changes;
+    my $safe_to_delete = $item->safe_to_delete;
+    ok( !$safe_to_delete, 'Cannot delete item with holds' );
+    is(
+        @{$safe_to_delete->messages}[0]->message,
+        'item_has_holds',
+        'Koha::Item->safe_to_delete reports item has holds',
+    );
+
+    $item_level_hold->delete;
 
     # linked_analytics
 

@@ -139,6 +139,7 @@ sub delete {
                 last_item_for_hold => { code => 'last_item_for_hold', description => 'The item is the last one on a record on which a biblio-level hold is placed' },
                 linked_analytics   => { code => 'linked_analytics',   description => 'The item has linked analytic records' },
                 not_same_branch    => { code => 'not_same_branch',    description => 'The item is blocked by independent branches' },
+                item_has_holds     => { code => 'item_has_holds',     description => 'The item has holds' },
             };
 
             if ( any { $error->message eq $_ } keys %{$errors} ) {

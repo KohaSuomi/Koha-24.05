@@ -48,6 +48,7 @@
                         [% CASE "book_reserved" %]<span>Item has a waiting hold</span>
                         [% CASE "linked_analytics" %]<span>Item has linked analytics</span>
                         [% CASE "last_item_for_hold" %]<span>Last item for bibliographic record with biblio-level hold on it</span>
+                        [% CASE "item_has_holds" %]<span>Item has holds</span>
                         [% CASE %]<span>Unknown reason '[% m.reason | html %]'</span>
                     [% END %]
                 [% CASE %]<span>Unknown message '[% m.code | html %]'</span>
