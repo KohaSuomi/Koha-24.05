@@ -50,14 +50,14 @@ function Click$function_name(event) {
         // Ota pääsanasta vain ensimmäiset 3 merkkiä, huomioi mahdolliset välilyönnit
         mainHeading = mainHeading.trim().substring(0, 3);
 
-        // Kirjoita pääsana isoilla kirjaimilla
-        mainHeading = mainHeading.toUpperCase();
-
         // Jos pääsana alkaa numerolla, ota numero ja seuraava sana (esim. "3 pientä autoa" -> "3 p")
         var match = mainHeading.match(/^(\d+)\s*(\S)?/);
         if (match) {
             mainHeading = match[1] + (match[2] ? " " + match[2] : "");
         }
+
+        // Kirjoita pääsana isoilla kirjaimilla
+        mainHeading = mainHeading.toUpperCase();
 
         // Muodosta signum: luokka + pääsana
         var signum = marc084a + " " + mainHeading;
