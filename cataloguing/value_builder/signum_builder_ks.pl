@@ -40,6 +40,7 @@ function Click$function_name(event) {
         } else if (resp.f245a) {
             // 2. indikaattori kertoo ohitettavien merkkien määrän
             var skip = parseInt(resp.f245ind2) || 0;
+            console.log("Skipping " + skip + " characters in 245a");
             mainHeading = resp.f245a.substring(skip);
         } else if (resp.f130a) {
             // 1. indikaattori kertoo ohitettavien merkkien määrän
