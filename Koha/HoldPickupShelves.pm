@@ -95,10 +95,13 @@ This method is used to unlock shelves that are not locked today.
 =cut
 sub open_locked_shelves {
     my ($self, $library_id) = @_;
-    my $today = DateTime->today->ymd;
-    my $shelves = $self->search({library_id => $library_id, locked => 1, locked_date => { '<' => $today }})->as_list;
+    my $shelves = $self->search({library_id => $library_id, locked => 1})->as_list;
     for my $shelf (@$shelves) {
-        $shelf->update({locked => 0, locked_date => undef});
+        # Only unlock if there are no holds linked to this shelf
+        my $holds_count = $shelf->holds_count;
+        if ($holds_count == 0) {
+            $shelf->update({locked => 0, locked_date => undef});
+        }
     }
 }
 
