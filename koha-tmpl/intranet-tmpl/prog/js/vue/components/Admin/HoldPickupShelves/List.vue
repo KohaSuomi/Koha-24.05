@@ -54,9 +54,11 @@ export default {
                         render: (data, type, row) => {
                             return `
                                 <div style="display:flex;align-items:center;gap:2px;">
+                                    <button type="button" class="priority-arrow-last" data-id="${row.hold_pickup_shelf_id}" data-priority="${data}" title="${this.$__('Set last priority')}" style="border:none;background:none;padding:0 2px;font-size:16px;">&#8659;</button>
                                     <button type="button" class="priority-arrow-down" data-id="${row.hold_pickup_shelf_id}" data-priority="${data}" title="${this.$__('Decrease priority')}" style="border:none;background:none;padding:0 2px;font-size:16px;">&#8595;</button>
                                     <span style="min-width:30px;display:inline-block;text-align:center;">${data !== null ? data : ''}</span>
                                     <button type="button" class="priority-arrow-up" data-id="${row.hold_pickup_shelf_id}" data-priority="${data}" title="${this.$__('Increase priority')}" style="border:none;background:none;padding:0 2px;font-size:16px;">&#8593;</button>
+                                    <button type="button" class="priority-arrow-first" data-id="${row.hold_pickup_shelf_id}" data-priority="${data}" title="${this.$__('Set first priority')}" style="border:none;background:none;padding:0 2px;font-size:16px;">&#8657;</button>
                                 </div>
                             `;
                         },
@@ -172,6 +174,35 @@ export default {
                             } else if (event.target && event.target.classList.contains("priority-arrow-up")) {
                                 const priority = parseInt(event.target.getAttribute("data-priority"));
                                 this.changePriority(event, priority - 1);
+                            } else if (event.target && event.target.classList.contains("priority-arrow-last")) {
+                                // Find the maximum priority value from the table rows
+                                const table = event.target.closest("table");
+                                let maxPriority = 0;
+                                if (table) {
+                                    const rows = table.querySelectorAll("tbody tr");
+                                    rows.forEach(row => {
+                                        const cell = row.querySelector('button[data-priority]');
+                                        if (cell) {
+                                            const p = parseInt(cell.getAttribute("data-priority"));
+                                            if (!isNaN(p) && p > maxPriority) maxPriority = p;
+                                        }
+                                    });
+                                }
+                                this.changePriority(event, maxPriority);
+                            } else if (event.target && event.target.classList.contains("priority-arrow-first")) {
+                                const table = event.target.closest("table");
+                                let minPriority = Infinity;
+                                if (table) {
+                                    const rows = table.querySelectorAll("tbody tr");
+                                    rows.forEach(row => {
+                                        const cell = row.querySelector('button[data-priority]');
+                                        if (cell) {
+                                            const p = parseInt(cell.getAttribute("data-priority"));
+                                            if (!isNaN(p) && p < minPriority) minPriority = p;
+                                        }
+                                    });
+                                }
+                                this.changePriority(event, minPriority);
                             }
                         });
                     }
