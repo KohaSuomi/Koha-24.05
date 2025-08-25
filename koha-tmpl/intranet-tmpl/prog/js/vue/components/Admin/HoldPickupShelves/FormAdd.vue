@@ -60,7 +60,7 @@
                             id="weekday"
                             v-model="hold_pickup_shelf.weekday"
                         >
-                            <option value=""></option>
+                            <option :value="null"></option>
                             <option
                                 v-for="weekday in weekdays"
                                 :value="weekday.id"
@@ -77,7 +77,7 @@
                             id="biblio_itemtype"
                             v-model="hold_pickup_shelf.biblio_itemtype"
                         >
-                            <option value=""></option>
+                            <option :value="null"></option>
                             <option
                                 v-for="itemtype in biblio_level_itemtypes"
                                 :value="itemtype.id"
@@ -94,7 +94,7 @@
                             id="patron_category_id"
                             v-model="hold_pickup_shelf.patron_category_id"
                         >   
-                            <option value=""></option>
+                            <option :value="null"></option>
                             <option
                                 v-for="category in categories"
                                 :value="category.patron_category_id"
