@@ -243,7 +243,7 @@
                                 Waiting here [% IF expires_on %] until [% expires_on | $KohaDates %][% END %].
                             </strong>
                             <strong class="waitingsince">
-                                Waiting here since [% w.waitingdate | $KohaDates %].
+                                Waiting here since [% w.waitingdate | $KohaDates %] on the pickup shelf [% w.hold_pickup_shelf.shelf_name | html %].
                             </strong>
                         </li>
                     [% END %]
