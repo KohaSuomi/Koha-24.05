@@ -642,6 +642,7 @@ if ( $messages->{'ResFound'} ) {
         reservenotes   => $reserve->{'reservenotes'},
         reserve_id     => $reserve->{reserve_id},
         bormessagepref => $holdmsgpreferences->{'transports'},
+        hold_pickup_library => $holdPickupShelfLibraryCheck ? 1 : undef,
     );
 }
 

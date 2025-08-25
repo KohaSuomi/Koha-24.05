@@ -673,7 +673,7 @@
                                                         <h4><strong>Transfer to:</strong> [% Branches.GetName( destbranch ) | html %]</h4>
                                                     [% ELSE %]
                                                         <h4><strong>Hold at</strong> [% Branches.GetName( destbranch ) | html %]</h4>
-                                                        [% IF Koha.Preference('HoldPickupShelves') %]
+                                                        [% IF Koha.Preference('HoldPickupShelves') && hold_pickup_library %]
                                                             <div id="hold-pickup-shelves-view" data-shelf-id="[% hold_pickup_shelf_id %]"></div>
                                                         [% END %]
                                                     [% END %]
@@ -870,7 +870,7 @@
                                                         <h4><strong>Transfer to:</strong> [% Branches.GetName( destbranch ) | html %]</h4>
                                                     [% ELSE %]
                                                         <h4><strong>Hold at</strong> [% Branches.GetName( destbranch ) | html %]</h4>
-                                                        [% IF Koha.Preference('HoldPickupShelves') %]
+                                                        [% IF Koha.Preference('HoldPickupShelves') && hold_pickup_library %]
                                                             <div id="hold-pickup-shelves-view" data-library-id="[% destbranch | html %]" data-biblio-id="[% itembiblionumber | html %]" data-patron-id="[% patron.borrowernumber | html %]"></div>
                                                         [% END %]
                                                     [% END %]
