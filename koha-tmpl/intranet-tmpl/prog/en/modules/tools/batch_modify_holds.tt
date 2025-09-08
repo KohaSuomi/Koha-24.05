@@ -416,7 +416,7 @@
                         var suspend_until_to   = modify_holds_form.find("#suspend_until_to").val();
 
                         if (suspend_until_from && suspend_until_to){
-                            searchpattern += _("suspend date between ") + suspend_until_from + " and " + suspend_until_to + " ";
+                            searchpattern += _("suspend date between ") + suspend_until_from + _(" and ") + suspend_until_to + " ";
                             return {"-between": [suspend_until_from, suspend_until_to]};
                         }
                         else if (suspend_until_from && !suspend_until_to){
