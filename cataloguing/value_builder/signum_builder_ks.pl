@@ -9,11 +9,23 @@ my $builder = sub {
     my $js = <<ENDJS;
 <script type="text/javascript">
 //<![CDATA[
+    var bn = \$('input[name="biblionumber"]').val();
+    if  (!bn) {
+            \$('#' + '$function_name').after(
+                '<span id="signum_warning" style="color:red; margin-left:10px;" data-toggle="tooltip" data-delay="0" data-trigger="hover" data-placement="right" title="Automaattista signumin luontia varten muokkaa niteet tietuenäkymän niteiden muokkauksen kautta">Signumin luonti ei onnistu, tietuenro puuttuu</span>'
+            );
+        }
+
 
 function Click$function_name(event) {
+
     var bn = \$('input[name="biblionumber"]').val();
     \$('#' + event.data.id).prop('disabled', true);
-    if (!bn) return false;
+    if (!bn) {
+        alert("Signum builder: Biblionumber not available");
+        \$('#' + event.data.id).prop('disabled', false);
+        return false;
+    }
 
     var url = '../cataloguing/plugin_launcher.pl?plugin_name=fi_JSON_084a_signum_builder_subfields.pl&biblionumber=' + bn;
     var req = \$.get(url);
