@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 use Modern::Perl;
+use utf8;
 
 my $builder = sub {
     my ($params) = @_;
@@ -11,9 +12,8 @@ my $builder = sub {
 //<![CDATA[
     var bn = \$('input[name="biblionumber"]').val();
     if  (!bn) {
-            \$('#' + '$function_name').after(
-                '<span id="signum_warning" style="color:red; margin-left:10px;" data-toggle="tooltip" data-delay="0" data-trigger="hover" data-placement="right" title="Automaattista signumin luontia varten muokkaa niteet tietuenäkymän niteiden muokkauksen kautta">Signumin luonti ei onnistu, tietuenro puuttuu</span>'
-            );
+            var infoElem = \$('<span id="signum_warning" style="color:red; margin-left:10px; margin-right:10px;" data-toggle="tooltip" data-delay="0" data-trigger="hover" data-placement="right" title="Jotta signumin generointi toimii, pitää niteet tuoda erämuokkaukseen tietueen Perustiedot-näytön Muokkaa valittuja niteitä -toiminnolla."><i class="fa fa-info-circle fa-2" aria-hidden="true"></i> Signumin luonti ei onnistu </span>');
+            \$('#' + '$function_name').after(infoElem);
         }
 
 
