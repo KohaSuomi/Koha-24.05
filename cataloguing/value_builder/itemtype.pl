@@ -77,16 +77,10 @@ my $builder = sub {
                         collection_code = \$("div[id^='subfield8']").find("select").val()
                     }
 
-                    var itemnumber = "";
-                    if(\$("input[name='itemnumber']").val()){
-                        itemnumber = \$("input[name='itemnumber']").val();
-                    }
-
                     var itemtype_url = '../cataloguing/value_builder/itemtype_generator.pl?itemtype=' + itemtype;
                     itemtype_url += shelving_loc ? '&loc=' + shelving_loc : '';
                     itemtype_url += sublocation ? '&subloc=' + sublocation : '';
                     itemtype_url += collection_code ? '&ccode=' + collection_code : '';
-                    itemtype_url += itemnumber ? '&itemnumber=' + itemnumber : '';
 
                     var req = \$.get(itemtype_url);
                     req.fail(function(jqxhr, text, error){
