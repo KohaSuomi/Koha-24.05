@@ -3,6 +3,12 @@
 use Modern::Perl;
 use utf8;
 
+my $language = C4::Languages::getlanguage() || 'fi';
+$language = (split(/-/, $language))[0];
+my $langcode = "fin";
+$langcode = "eng" if ($language eq 'en');
+$langcode = "swe" if ($language eq 'sv');
+
 my $builder = sub {
     my ($params) = @_;
     my $function_name = $params->{id};
@@ -10,11 +16,31 @@ my $builder = sub {
     my $js = <<ENDJS;
 <script type="text/javascript">
 //<![CDATA[
-    var bn = \$('input[name="biblionumber"]').val();
-    if  (!bn) {
-            var infoElem = \$('<span id="signum_warning" style="color:red; margin-left:10px; margin-right:10px;" data-toggle="tooltip" data-delay="0" data-trigger="hover" data-placement="right" title="Jotta signumin generointi toimii, pitää niteet tuoda erämuokkaukseen tietueen Perustiedot-näytön Muokkaa valittuja niteitä -toiminnolla."><i class="fa fa-info-circle fa-2" aria-hidden="true"></i> Signumin luonti ei onnistu </span>');
-            \$('#' + '$function_name').after(infoElem);
+    if (window.location.pathname === '/cgi-bin/koha/tools/batchMod.pl') {
+
+        console.log('$langcode');
+        if ('$langcode' === 'fin') {
+            var bn = \$('input[name="biblionumber"]').val();
+            if  (!bn) {
+                var infoElem = \$('<span id="signum_warning" style="color:red; margin-left:10px; margin-right:10px;" data-toggle="tooltip" data-delay="0" data-trigger="hover" data-placement="right" title="Signumin generointi on käytettävissä silloin, kun niteet tuodaan erämuokkaukseen tietueen Perustiedot-näytön Muokkaa valittuja niteitä -toiminnolla."><i class="fa fa-info-circle fa-2" aria-hidden="true"></i> Signumin luonti ei onnistu </span>');
+                \$('#' + '$function_name').after(infoElem);
+            }
         }
+        if ('$langcode' === 'swe') {
+            var bn = \$('input[name="biblionumber"]').val();
+            if  (!bn) {
+                var infoElem = \$('<span id="signum_warning" style="color:red; margin-left:10px; margin-right:10px;" data-toggle="tooltip" data-delay="0" data-trigger="hover" data-placement="right" title="Generering av signum är tillgänglig när exemplar tas till batchredigering via redigeringsfunktionen för valda exemplar på postens grundinformation."><i class="fa fa-info-circle fa-2" aria-hidden="true"></i> Det gick inte att skapa signum </span>');
+                \$('#' + '$function_name').after(infoElem);
+            }
+        }
+        if ('$langcode' === 'eng') {
+            var bn = \$('input[name="biblionumber"]').val();
+            if  (!bn) {
+                var infoElem = \$('<span id="signum_warning" style="color:red; margin-left:10px; margin-right:10px;" data-toggle="tooltip" data-delay="0" data-trigger="hover" data-placement="right" title="Signum generation is available when items are brought to batch edit via the Edit selected items function on the record’s Basic details screen."><i class="fa fa-info-circle fa-2" aria-hidden="true"></i> Signum creation failed </span>');
+                \$('#' + '$function_name').after(infoElem);
+            }
+        }
+    }
 
 
 function Click$function_name(event) {
